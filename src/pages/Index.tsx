@@ -94,7 +94,14 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50 geometric-bg">
+      <div className="floating-cube" style={{ top: '10%', left: '5%', animationDelay: '0s' }}></div>
+      <div className="floating-cube" style={{ top: '60%', right: '10%', animationDelay: '2s' }}></div>
+      <div className="floating-shape shape-circle" style={{ top: '20%', right: '15%', animationDelay: '1s' }}></div>
+      <div className="floating-shape shape-triangle" style={{ bottom: '15%', left: '8%', animationDelay: '3s' }}></div>
+      <div className="floating-shape shape-hexagon" style={{ top: '45%', left: '12%', animationDelay: '4s' }}></div>
+      <div className="floating-shape shape-circle" style={{ bottom: '25%', right: '20%', animationDelay: '2.5s' }}></div>
+      <div className="floating-shape shape-triangle" style={{ top: '70%', right: '5%', animationDelay: '5s' }}></div>
       <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50 border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -130,8 +137,8 @@ const Index = () => {
         </div>
       </nav>
 
-      <section id="home" className="pt-32 pb-20 px-4">
-        <div className="container mx-auto text-center">
+      <section id="home" className="pt-32 pb-20 px-4 relative">
+        <div className="container mx-auto text-center relative z-10">
           <div className="mb-8 inline-block">
             <Badge className="text-lg px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600">
               Инновационные технологии 3D-печати
@@ -171,8 +178,8 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="technologies" className="py-20 px-4 bg-white">
-        <div className="container mx-auto">
+      <section id="technologies" className="py-20 px-4 bg-white relative">
+        <div className="container mx-auto relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Современные технологии
@@ -211,8 +218,8 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="materials" className="py-20 px-4 bg-gradient-to-br from-gray-50 to-purple-50">
-        <div className="container mx-auto">
+      <section id="materials" className="py-20 px-4 bg-gradient-to-br from-gray-50 to-purple-50 relative">
+        <div className="container mx-auto relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Разнообразие материалов
@@ -245,8 +252,8 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="portfolio" className="py-20 px-4 bg-white">
-        <div className="container mx-auto">
+      <section id="portfolio" className="py-20 px-4 bg-white relative">
+        <div className="container mx-auto relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Наши работы
@@ -275,8 +282,8 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="calculator" className="py-20 px-4 bg-gradient-to-br from-gray-50 to-purple-50">
-        <div className="container mx-auto max-w-5xl">
+      <section id="calculator" className="py-20 px-4 bg-gradient-to-br from-gray-50 to-purple-50 relative">
+        <div className="container mx-auto max-w-5xl relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Калькулятор стоимости
@@ -477,8 +484,8 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="contacts" className="py-20 px-4 bg-white">
-        <div className="container mx-auto max-w-4xl">
+      <section id="contacts" className="py-20 px-4 bg-white relative">
+        <div className="container mx-auto max-w-4xl relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Контакты
