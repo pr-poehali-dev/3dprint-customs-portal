@@ -112,6 +112,10 @@
   .geometric-bg {
     position: relative;
     overflow: hidden;
+    background-image: url("https://cdn.poehali.dev/files/5db2f74f-580c-4dcb-bcfb-44bf0d71ea96.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
   }
 
   .geometric-bg::before {
@@ -121,8 +125,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    opacity: 0.03;
+    background: rgba(255, 255, 255, 0.92);
     z-index: 0;
   }
 
@@ -138,15 +141,15 @@
         0deg,
         transparent,
         transparent 50px,
-        rgba(102, 126, 234, 0.03) 50px,
-        rgba(102, 126, 234, 0.03) 51px
+        rgba(102, 126, 234, 0.02) 50px,
+        rgba(102, 126, 234, 0.02) 51px
       ),
       repeating-linear-gradient(
         90deg,
         transparent,
         transparent 50px,
-        rgba(118, 75, 162, 0.03) 50px,
-        rgba(118, 75, 162, 0.03) 51px
+        rgba(118, 75, 162, 0.02) 50px,
+        rgba(118, 75, 162, 0.02) 51px
       );
     animation: gridMove 60s linear infinite;
     z-index: 0;
