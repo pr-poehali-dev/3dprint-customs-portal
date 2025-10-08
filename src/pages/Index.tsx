@@ -109,7 +109,7 @@ const Index = () => {
               <img 
                 src="https://cdn.poehali.dev/files/3c3906bd-e851-4dbd-8fe8-2b8a7acff3cc.jpg" 
                 alt="3DPrintCustoms Logo" 
-                className="w-12 h-12 object-contain"
+                className="w-12 h-12 object-contain rounded-xl"
               />
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 3DPrintCustoms
