@@ -37,6 +37,7 @@ const Index = () => {
   const technologies = [
     { icon: 'Box', name: 'FDM', desc: 'Послойное наплавление материала' },
     { icon: 'Layers', name: 'SLA', desc: 'Стереолитография высокой точности' },
+    { icon: 'Zap', name: 'DLA', desc: 'Цифровая световая обработка' },
   ];
 
   const materials = [
