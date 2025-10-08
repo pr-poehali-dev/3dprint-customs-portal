@@ -84,6 +84,7 @@ const Index = () => {
                 { id: 'technologies', label: 'Технологии' },
                 { id: 'materials', label: 'Материалы' },
                 { id: 'portfolio', label: 'Портфолио' },
+                { id: 'order', label: 'Заявка' },
                 { id: 'contacts', label: 'Контакты' },
               ].map((item) => (
                 <button
@@ -246,6 +247,90 @@ const Index = () => {
         </div>
       </section>
 
+
+      <section id="order" className="py-20 px-4 relative">
+        <div className="container mx-auto max-w-3xl relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Заявка на расчет
+            </h2>
+            <p className="text-xl text-gray-600">Заполните форму и мы рассчитаем стоимость вашего заказа</p>
+          </div>
+          
+          <Card className="border-2">
+            <CardHeader>
+              <CardTitle className="text-2xl">Параметры заказа</CardTitle>
+              <CardDescription>Укажите детали для точного расчета стоимости</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleFormSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="order-length">Длина (мм)</Label>
+                    <Input id="order-length" name="length" type="number" placeholder="100" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="order-width">Ширина (мм)</Label>
+                    <Input id="order-width" name="width" type="number" placeholder="100" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="order-height">Высота (мм)</Label>
+                    <Input id="order-height" name="height" type="number" placeholder="100" required />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="plastic-type">Вид пластика</Label>
+                  <Select name="plastic" required>
+                    <SelectTrigger id="plastic-type">
+                      <SelectValue placeholder="Выберите материал" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pla">PLA - Экологичный, доступный</SelectItem>
+                      <SelectItem value="abs">ABS - Прочный, термостойкий</SelectItem>
+                      <SelectItem value="petg">PETG - Гибкий, долговечный</SelectItem>
+                      <SelectItem value="nylon">Nylon - Износостойкий</SelectItem>
+                      <SelectItem value="resin">Resin - Высокая детализация</SelectItem>
+                      <SelectItem value="tpu">TPU - Эластичный, гибкий</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="infill">Процент заполнения (%)</Label>
+                  <Input id="infill" name="infill" type="number" min="10" max="100" placeholder="20" required />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="quantity">Количество (шт)</Label>
+                  <Input id="quantity" name="quantity" type="number" min="1" placeholder="1" required />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="model-file">Файл 3D модели</Label>
+                  <Input id="model-file" name="model" type="file" accept=".stl,.obj,.3mf,.step" />
+                  <p className="text-xs text-gray-500">Форматы: STL, OBJ, 3MF, STEP (необязательно)</p>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="contact-email">Email для связи</Label>
+                  <Input id="contact-email" name="email" type="email" placeholder="example@mail.com" required />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="contact-phone">Телефон (необязательно)</Label>
+                  <Input id="contact-phone" name="phone" type="tel" placeholder="+7 (999) 123-45-67" />
+                </div>
+                
+                <Button type="submit" size="lg" className="w-full text-lg py-6">
+                  <Icon name="Send" className="mr-2" size={20} />
+                  Отправить на расчет
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
 
       <section id="contacts" className="py-20 px-4 relative">
         <div className="container mx-auto max-w-4xl relative z-10">
