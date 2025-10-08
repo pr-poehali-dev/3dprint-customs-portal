@@ -13,44 +13,7 @@ const Index = () => {
   const { toast } = useToast();
   const [activeSection, setActiveSection] = useState('home');
   
-  const [calcParams, setCalcParams] = useState({
-    length: 10,
-    width: 10,
-    height: 10,
-    technology: 'fdm',
-    material: 'pla',
-    quantity: 1,
-    infill: 20,
-  });
-  
-  const materialPrices: Record<string, number> = {
-    pla: 150,
-    abs: 180,
-    petg: 200,
-    nylon: 350,
-    resin: 450,
-    tpu: 400,
-  };
-  
-  const technologyMultiplier: Record<string, number> = {
-    fdm: 1.0,
-    sla: 1.5,
-    sls: 2.0,
-  };
-  
-  const calculatePrice = () => {
-    const volume = (calcParams.length * calcParams.width * calcParams.height) / 1000;
-    const materialCost = materialPrices[calcParams.material] || 150;
-    const techMult = technologyMultiplier[calcParams.technology] || 1.0;
-    const infillFactor = calcParams.infill / 100;
-    
-    const basePrice = volume * materialCost * techMult * infillFactor;
-    const total = basePrice * calcParams.quantity;
-    
-    return Math.round(total);
-  };
-  
-  const estimatedPrice = calculatePrice();
+
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
@@ -121,7 +84,6 @@ const Index = () => {
                 { id: 'technologies', label: 'Технологии' },
                 { id: 'materials', label: 'Материалы' },
                 { id: 'portfolio', label: 'Портфолио' },
-                { id: 'calculator', label: 'Расчет' },
                 { id: 'contacts', label: 'Контакты' },
               ].map((item) => (
                 <button
@@ -153,8 +115,8 @@ const Index = () => {
             Профессиональная 3D-печать для бизнеса и частных лиц. Широкий выбор материалов и технологий.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" className="text-lg px-8" onClick={() => scrollToSection('calculator')}>
-              Рассчитать стоимость
+            <Button size="lg" className="text-lg px-8" onClick={() => scrollToSection('contacts')}>
+              Связаться с нами
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8" onClick={() => scrollToSection('portfolio')}>
               Посмотреть работы
@@ -284,207 +246,6 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="calculator" className="py-20 px-4 relative">
-        <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Калькулятор стоимости
-            </h2>
-            <p className="text-xl text-gray-600">Рассчитайте стоимость печати в режиме реального времени</p>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="border-2">
-              <CardHeader>
-                <CardTitle className="text-2xl">Параметры модели</CardTitle>
-                <CardDescription>Укажите размеры и настройки печати</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="length">Длина (см)</Label>
-                    <Input
-                      id="length"
-                      type="number"
-                      min="1"
-                      max="50"
-                      value={calcParams.length}
-                      onChange={(e) => setCalcParams({ ...calcParams, length: Number(e.target.value) })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="width">Ширина (см)</Label>
-                    <Input
-                      id="width"
-                      type="number"
-                      min="1"
-                      max="50"
-                      value={calcParams.width}
-                      onChange={(e) => setCalcParams({ ...calcParams, width: Number(e.target.value) })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="height">Высота (см)</Label>
-                    <Input
-                      id="height"
-                      type="number"
-                      min="1"
-                      max="50"
-                      value={calcParams.height}
-                      onChange={(e) => setCalcParams({ ...calcParams, height: Number(e.target.value) })}
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label>Технология печати</Label>
-                  <Select value={calcParams.technology} onValueChange={(value) => setCalcParams({ ...calcParams, technology: value })}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="fdm">FDM - Послойное наплавление (x1.0)</SelectItem>
-                      <SelectItem value="sla">SLA - Стереолитография (x1.5)</SelectItem>
-                      <SelectItem value="sls">SLS - Лазерное спекание (x2.0)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label>Материал</Label>
-                  <Select value={calcParams.material} onValueChange={(value) => setCalcParams({ ...calcParams, material: value })}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pla">PLA - 150₽/см³</SelectItem>
-                      <SelectItem value="abs">ABS - 180₽/см³</SelectItem>
-                      <SelectItem value="petg">PETG - 200₽/см³</SelectItem>
-                      <SelectItem value="nylon">Nylon - 350₽/см³</SelectItem>
-                      <SelectItem value="resin">Resin - 450₽/см³</SelectItem>
-                      <SelectItem value="tpu">TPU - 400₽/см³</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="infill">Заполнение: {calcParams.infill}%</Label>
-                    <span className="text-sm text-gray-600">Влияет на прочность и расход</span>
-                  </div>
-                  <input
-                    id="infill"
-                    type="range"
-                    min="10"
-                    max="100"
-                    step="10"
-                    value={calcParams.infill}
-                    onChange={(e) => setCalcParams({ ...calcParams, infill: Number(e.target.value) })}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="quantity">Количество экземпляров</Label>
-                  <Input
-                    id="quantity"
-                    type="number"
-                    min="1"
-                    max="100"
-                    value={calcParams.quantity}
-                    onChange={(e) => setCalcParams({ ...calcParams, quantity: Number(e.target.value) })}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <div className="space-y-6">
-              <Card className="border-2 bg-gradient-to-br from-blue-50 to-purple-50">
-                <CardHeader>
-                  <CardTitle className="text-2xl">Расчет стоимости</CardTitle>
-                  <CardDescription>Предварительная оценка</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span className="text-gray-600">Объем модели:</span>
-                      <span className="font-semibold">{((calcParams.length * calcParams.width * calcParams.height) / 1000).toFixed(2)} см³</span>
-                    </div>
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span className="text-gray-600">Материал:</span>
-                      <span className="font-semibold">{calcParams.material.toUpperCase()}</span>
-                    </div>
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span className="text-gray-600">Технология:</span>
-                      <span className="font-semibold">{calcParams.technology.toUpperCase()}</span>
-                    </div>
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span className="text-gray-600">Заполнение:</span>
-                      <span className="font-semibold">{calcParams.infill}%</span>
-                    </div>
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span className="text-gray-600">Количество:</span>
-                      <span className="font-semibold">{calcParams.quantity} шт</span>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-white rounded-lg p-6 text-center">
-                    <p className="text-gray-600 mb-2">Итоговая стоимость</p>
-                    <p className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                      {estimatedPrice.toLocaleString('ru-RU')} ₽
-                    </p>
-                    <p className="text-sm text-gray-500 mt-2">* Финальная цена может отличаться</p>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Icon name="Clock" size={16} />
-                      <span>Срок изготовления: 1-3 дня</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Icon name="Shield" size={16} />
-                      <span>Гарантия качества</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Icon name="Truck" size={16} />
-                      <span>Доставка по всей России</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-2">
-                <CardHeader>
-                  <CardTitle className="text-xl">Заказать печать</CardTitle>
-                  <CardDescription>Оставьте контакты для оформления заказа</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleFormSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Ваше имя</Label>
-                      <Input id="name" name="name" placeholder="Иван Иванов" required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" name="email" type="email" placeholder="ivan@example.com" required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Телефон</Label>
-                      <Input id="phone" name="phone" type="tel" placeholder="+7 (999) 123-45-67" />
-                    </div>
-                    <input type="hidden" name="price" value={estimatedPrice} />
-                    <input type="hidden" name="params" value={JSON.stringify(calcParams)} />
-                    <Button type="submit" className="w-full text-lg py-6">
-                      Заказать за {estimatedPrice.toLocaleString('ru-RU')} ₽
-                    </Button>
-                    <p className="text-xs text-center text-gray-500">Также можете отправить 3D-модель на info@3dprintcustoms.ru</p>
-                  </form>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section id="contacts" className="py-20 px-4 relative">
         <div className="container mx-auto max-w-4xl relative z-10">
