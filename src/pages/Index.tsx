@@ -313,6 +313,16 @@ const Index = () => {
                 </div>
                 
                 <div className="space-y-2">
+                  <Label htmlFor="order-description">Описание</Label>
+                  <Textarea 
+                    id="order-description" 
+                    name="description" 
+                    placeholder="Опишите ваши пожелания: цвет, постобработка, особые требования..." 
+                    rows={4}
+                  />
+                </div>
+                
+                <div className="space-y-2">
                   <Label htmlFor="contact-email">Email для связи</Label>
                   <Input id="contact-email" name="email" type="email" placeholder="example@mail.com" required />
                 </div>
