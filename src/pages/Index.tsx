@@ -180,7 +180,7 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="technologies" className="py-20 px-4 bg-white relative">
+      <section id="technologies" className="py-20 px-4 relative">
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -220,7 +220,7 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="materials" className="py-20 px-4 bg-gradient-to-br from-gray-50 to-purple-50 relative">
+      <section id="materials" className="py-20 px-4 relative">
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -254,7 +254,7 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="portfolio" className="py-20 px-4 bg-white relative">
+      <section id="portfolio" className="py-20 px-4 relative">
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -284,7 +284,7 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="calculator" className="py-20 px-4 bg-gradient-to-br from-gray-50 to-purple-50 relative">
+      <section id="calculator" className="py-20 px-4 relative">
         <div className="container mx-auto max-w-5xl relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -486,7 +486,7 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="contacts" className="py-20 px-4 bg-white relative">
+      <section id="contacts" className="py-20 px-4 relative">
         <div className="container mx-auto max-w-4xl relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
