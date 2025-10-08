@@ -281,7 +281,7 @@ const Index = () => {
           <div className="mt-12 text-center">
             <div className="flex justify-center gap-4 flex-wrap">
               <Badge variant="outline" className="text-base px-4 py-2">Работаем ежедневно</Badge>
-              <Badge variant="outline" className="text-base px-4 py-2">Консультации бесплатно</Badge>
+              <Badge variant="outline" className="text-base px-4 py-2">3D моделирование</Badge>
               <Badge variant="outline" className="text-base px-4 py-2">Доставка по всей России</Badge>
             </div>
           </div>
