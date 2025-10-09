@@ -380,7 +380,7 @@ const Index = () => {
         </div>
       </section>
 
-      <footer className="bg-gradient-to-br from-gray-900 to-blue-900 text-white py-12 px-4">
+      <footer className="bg-gradient-to-br from-gray-900 to-blue-900 text-white py-12 px-4 relative z-50">
         <div className="container mx-auto text-center">
           <div className="flex items-center justify-center gap-3 mb-6">
             <img 
