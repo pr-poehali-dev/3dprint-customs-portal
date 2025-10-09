@@ -363,18 +363,6 @@ const Index = () => {
             <Card className="border-2 hover:border-primary transition-all">
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-                  <Icon name="MessageCircle" className="text-white" size={24} />
-                </div>
-                <CardTitle>Онлайн-чат</CardTitle>
-                <CardDescription className="text-base">Ответим в течение 5 минут</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full">Открыть чат</Button>
-              </CardContent>
-            </Card>
-            <Card className="border-2 hover:border-primary transition-all md:col-span-2">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-4">
                   <Icon name="MapPin" className="text-white" size={24} />
                 </div>
                 <CardTitle>Адрес</CardTitle>
@@ -395,9 +383,11 @@ const Index = () => {
       <footer className="bg-gradient-to-br from-gray-900 to-blue-900 text-white py-12 px-4">
         <div className="container mx-auto text-center">
           <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-              <Icon name="Box" className="text-white" size={24} />
-            </div>
+            <img 
+              src="https://cdn.poehali.dev/files/3c3906bd-e851-4dbd-8fe8-2b8a7acff3cc.jpg" 
+              alt="3DPrintCustoms Logo" 
+              className="w-12 h-12 object-contain rounded-xl"
+            />
             <h3 className="text-2xl font-bold">3DPrintCustoms</h3>
           </div>
           <p className="text-gray-300 mb-4">Инновационные технологии 3D-печати для вашего бизнеса</p>
