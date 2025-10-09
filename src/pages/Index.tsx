@@ -308,8 +308,8 @@ const Index = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="model-file">Файл 3D модели</Label>
-                  <Input id="model-file" name="model" type="file" accept=".stl,.obj,.3mf,.step" />
-                  <p className="text-xs text-gray-500">Форматы: STL, OBJ, 3MF, STEP (необязательно)</p>
+                  <Input id="model-file" name="model" type="file" accept=".stl,.step,.dwg,.obj,.3mf" />
+                  <p className="text-xs text-gray-500">Форматы: STL, STEP, DWG, OBJ, 3MF</p>
                 </div>
                 
                 <div className="space-y-2">
