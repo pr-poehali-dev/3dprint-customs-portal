@@ -372,6 +372,15 @@ const Index = () => {
                 <Button className="w-full">Открыть чат</Button>
               </CardContent>
             </Card>
+            <Card className="border-2 hover:border-primary transition-all md:col-span-2">
+              <CardHeader>
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-4">
+                  <Icon name="MapPin" className="text-white" size={24} />
+                </div>
+                <CardTitle>Адрес</CardTitle>
+                <CardDescription className="text-base">г. Москва, ул. Лобановский Лес, дом 11 (м. Прокшино)</CardDescription>
+              </CardHeader>
+            </Card>
           </div>
           <div className="mt-12 text-center">
             <div className="flex justify-center gap-4 flex-wrap">
