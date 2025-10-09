@@ -129,9 +129,9 @@ const Index = () => {
               { icon: 'Award', title: 'Качественно', desc: 'Точность до 0.1мм' },
               { icon: 'Users', title: 'Надежно', desc: '500+ клиентов' },
             ].map((item) => (
-              <Card key={item.title} className="border-2 hover:border-primary transition-all hover:shadow-lg">
+              <Card key={item.title} className="border-2 hover:border-primary transition-all hover:shadow-lg group cursor-pointer">
                 <CardContent className="pt-6 text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
                     <Icon name={item.icon} className="text-white" size={24} />
                   </div>
                   <h3 className="font-bold text-xl mb-2">{item.title}</h3>
@@ -153,9 +153,9 @@ const Index = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {technologies.map((tech) => (
-              <Card key={tech.name} className="group hover:shadow-xl transition-all border-2 hover:border-primary">
+              <Card key={tech.name} className="group hover:shadow-xl transition-all border-2 hover:border-primary cursor-pointer">
                 <CardHeader>
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                     <Icon name={tech.icon} className="text-white" size={32} />
                   </div>
                   <CardTitle className="text-2xl">{tech.name}</CardTitle>
@@ -227,10 +227,10 @@ const Index = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {portfolio.map((item, index) => (
-              <Card key={index} className="group overflow-hidden hover:shadow-xl transition-all border-2 hover:border-primary">
+              <Card key={index} className="group overflow-hidden hover:shadow-xl transition-all border-2 hover:border-primary cursor-pointer">
                 <div className="h-64 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 flex items-center justify-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10"></div>
-                  <Icon name="Box" className="text-gray-300 group-hover:scale-110 transition-transform" size={120} />
+                  <Icon name="Box" className="text-gray-300 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500" size={120} />
                 </div>
                 <CardHeader>
                   <CardTitle className="text-2xl">{item.title}</CardTitle>
@@ -351,18 +351,18 @@ const Index = () => {
             <p className="text-xl text-gray-600">Свяжитесь с нами удобным способом</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="border-2 hover:border-primary transition-all">
+            <Card className="border-2 hover:border-primary transition-all hover:shadow-lg group cursor-pointer">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                   <Icon name="Mail" className="text-white" size={24} />
                 </div>
                 <CardTitle>Email</CardTitle>
                 <CardDescription className="text-base">info@3dprintcustoms.ru</CardDescription>
               </CardHeader>
             </Card>
-            <Card className="border-2 hover:border-primary transition-all">
+            <Card className="border-2 hover:border-primary transition-all hover:shadow-lg group cursor-pointer">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                   <Icon name="MapPin" className="text-white" size={24} />
                 </div>
                 <CardTitle>Адрес</CardTitle>
