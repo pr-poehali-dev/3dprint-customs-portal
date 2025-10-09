@@ -126,7 +126,7 @@ const Index = () => {
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {[
               { icon: 'Zap', title: 'Быстро', desc: 'От 24 часов' },
-              { icon: 'Award', title: 'Качественно', desc: 'Точность до 0.1мм' },
+              { icon: 'Award', title: 'Качественно', desc: 'Точность до 0.5мм' },
               { icon: 'Users', title: 'Надежно', desc: '500+ клиентов' },
             ].map((item) => (
               <Card key={item.title} className="border-2 hover:border-primary transition-all hover:shadow-lg group cursor-pointer">
