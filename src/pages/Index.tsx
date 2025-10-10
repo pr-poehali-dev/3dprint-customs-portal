@@ -333,6 +333,28 @@ const Index = () => {
                 </div>
                 
                 <div className="space-y-2">
+                  <Label htmlFor="color">Цвет материала</Label>
+                  <Select name="color" required>
+                    <SelectTrigger id="color">
+                      <SelectValue placeholder="Выберите цвет" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="white">Белый</SelectItem>
+                      <SelectItem value="black">Черный</SelectItem>
+                      <SelectItem value="red">Красный</SelectItem>
+                      <SelectItem value="blue">Синий</SelectItem>
+                      <SelectItem value="green">Зеленый</SelectItem>
+                      <SelectItem value="yellow">Желтый</SelectItem>
+                      <SelectItem value="orange">Оранжевый</SelectItem>
+                      <SelectItem value="purple">Фиолетовый</SelectItem>
+                      <SelectItem value="gray">Серый</SelectItem>
+                      <SelectItem value="transparent">Прозрачный</SelectItem>
+                      <SelectItem value="custom">Другой (указать в описании)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
                   <Label htmlFor="infill">Процент заполнения (%)</Label>
                   <Input id="infill" name="infill" type="number" min="10" max="100" placeholder="20" required />
                 </div>
