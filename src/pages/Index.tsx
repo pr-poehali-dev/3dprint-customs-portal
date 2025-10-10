@@ -12,11 +12,13 @@ import { useToast } from '@/hooks/use-toast';
 const Index = () => {
   const { toast } = useToast();
   const [activeSection, setActiveSection] = useState('home');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
 
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
+    setMobileMenuOpen(false);
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -90,15 +92,49 @@ const Index = () => {
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`font-medium transition-colors hover:text-primary ${
+                  className={`font-medium transition-all duration-200 hover:text-primary relative group ${
                     activeSection === item.id ? 'text-primary' : 'text-gray-600'
+                  }`}
+                >
+                  {item.label}
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-200 ${
+                    activeSection === item.id ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}></span>
+                </button>
+              ))}
+            </div>
+            <button
+              className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              <Icon name={mobileMenuOpen ? 'X' : 'Menu'} size={24} />
+            </button>
+          </div>
+          {mobileMenuOpen && (
+            <div className="md:hidden mt-4 py-4 border-t border-gray-200 space-y-2 animate-in slide-in-from-top-5 duration-200">
+              {[
+                { id: 'home', label: 'Главная' },
+                { id: 'technologies', label: 'Технологии' },
+                { id: 'materials', label: 'Материалы' },
+                { id: 'portfolio', label: 'Портфолио' },
+                { id: 'order', label: 'Заявка' },
+                { id: 'contacts', label: 'Контакты' },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`w-full text-left px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    activeSection === item.id
+                      ? 'bg-primary text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
                   {item.label}
                 </button>
               ))}
             </div>
-          </div>
+          )}
         </div>
       </nav>
 
