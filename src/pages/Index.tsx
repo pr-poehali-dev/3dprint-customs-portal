@@ -82,22 +82,22 @@ const Index = () => {
             </div>
             <div className="hidden md:flex gap-6">
               {[
-                { id: 'home', label: 'Главная' },
-                { id: 'technologies', label: 'Технологии' },
-                { id: 'materials', label: 'Материалы' },
-                { id: 'portfolio', label: 'Портфолио' },
-                { id: 'order', label: 'Заявка' },
-                { id: 'contacts', label: 'Контакты' },
+                { id: 'home', label: 'Главная', color: 'from-blue-600 to-cyan-500' },
+                { id: 'technologies', label: 'Технологии', color: 'from-purple-600 to-pink-500' },
+                { id: 'materials', label: 'Материалы', color: 'from-green-600 to-emerald-500' },
+                { id: 'portfolio', label: 'Портфолио', color: 'from-orange-600 to-yellow-500' },
+                { id: 'order', label: 'Заявка', color: 'from-pink-600 to-rose-500' },
+                { id: 'contacts', label: 'Контакты', color: 'from-indigo-600 to-purple-500' },
               ].map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`font-medium transition-all duration-200 hover:text-primary relative group ${
-                    activeSection === item.id ? 'text-primary' : 'text-gray-600'
+                  className={`font-medium transition-all duration-200 relative group ${
+                    activeSection === item.id ? `bg-gradient-to-r ${item.color} bg-clip-text text-transparent` : 'text-gray-600 hover:opacity-80'
                   }`}
                 >
                   {item.label}
-                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-200 ${
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r ${item.color} transition-all duration-200 ${
                     activeSection === item.id ? 'w-full' : 'w-0 group-hover:w-full'
                   }`}></span>
                 </button>
@@ -114,19 +114,19 @@ const Index = () => {
           {mobileMenuOpen && (
             <div className="md:hidden mt-4 py-4 border-t border-gray-200 space-y-2 animate-in slide-in-from-top-5 duration-200">
               {[
-                { id: 'home', label: 'Главная' },
-                { id: 'technologies', label: 'Технологии' },
-                { id: 'materials', label: 'Материалы' },
-                { id: 'portfolio', label: 'Портфолио' },
-                { id: 'order', label: 'Заявка' },
-                { id: 'contacts', label: 'Контакты' },
+                { id: 'home', label: 'Главная', color: 'from-blue-600 to-cyan-500' },
+                { id: 'technologies', label: 'Технологии', color: 'from-purple-600 to-pink-500' },
+                { id: 'materials', label: 'Материалы', color: 'from-green-600 to-emerald-500' },
+                { id: 'portfolio', label: 'Портфолио', color: 'from-orange-600 to-yellow-500' },
+                { id: 'order', label: 'Заявка', color: 'from-pink-600 to-rose-500' },
+                { id: 'contacts', label: 'Контакты', color: 'from-indigo-600 to-purple-500' },
               ].map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
                   className={`w-full text-left px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                     activeSection === item.id
-                      ? 'bg-primary text-white'
+                      ? `bg-gradient-to-r ${item.color} text-white shadow-lg`
                       : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
