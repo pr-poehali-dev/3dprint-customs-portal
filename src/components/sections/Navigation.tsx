@@ -97,26 +97,26 @@ const Navigation = ({
             <div className="relative ml-4 border-l pl-4" ref={languageMenuRef}>
               <button
                 onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-all"
+                className="flex items-center gap-1 p-2 rounded-lg text-2xl hover:bg-gray-100 transition-all"
+                title={currentLanguage?.label}
               >
-                <span className="text-lg">{currentLanguage?.flag}</span>
-                <span>{currentLanguage?.code.toUpperCase()}</span>
-                <Icon name={languageMenuOpen ? 'ChevronUp' : 'ChevronDown'} size={16} />
+                <span>{currentLanguage?.flag}</span>
+                <Icon name={languageMenuOpen ? 'ChevronUp' : 'ChevronDown'} size={14} className="text-gray-600" />
               </button>
               {languageMenuOpen && (
-                <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 animate-in slide-in-from-top-5 duration-200">
+                <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-2 animate-in slide-in-from-top-5 duration-200">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
                       onClick={() => handleLanguageChange(lang.code as 'ru' | 'en' | 'zh')}
-                      className={`w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 transition-colors ${
                         language === lang.code ? 'bg-gradient-to-r from-blue-50 to-purple-50' : ''
                       }`}
                     >
                       <span className="text-lg">{lang.flag}</span>
                       <span className="font-medium">{lang.label}</span>
                       {language === lang.code && (
-                        <Icon name="Check" size={16} className="ml-auto text-blue-600" />
+                        <Icon name="Check" size={14} className="ml-auto text-blue-600" />
                       )}
                     </button>
                   ))}
@@ -128,13 +128,14 @@ const Navigation = ({
             <div className="md:hidden relative" ref={mobileLanguageMenuRef}>
               <button
                 onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
-                className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-gray-600 hover:bg-gray-100 transition-all"
+                className="flex items-center gap-1 p-1 rounded text-xl hover:bg-gray-100 transition-all"
+                title={currentLanguage?.label}
               >
                 <span>{currentLanguage?.flag}</span>
-                <Icon name={languageMenuOpen ? 'ChevronUp' : 'ChevronDown'} size={14} />
+                <Icon name={languageMenuOpen ? 'ChevronUp' : 'ChevronDown'} size={12} className="text-gray-600" />
               </button>
               {languageMenuOpen && (
-                <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-2 animate-in slide-in-from-top-5 duration-200">
+                <div className="absolute top-full right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 py-2 animate-in slide-in-from-top-5 duration-200">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
@@ -143,10 +144,10 @@ const Navigation = ({
                         language === lang.code ? 'bg-gradient-to-r from-blue-50 to-purple-50' : ''
                       }`}
                     >
-                      <span>{lang.flag}</span>
+                      <span className="text-base">{lang.flag}</span>
                       <span className="font-medium">{lang.label}</span>
                       {language === lang.code && (
-                        <Icon name="Check" size={14} className="ml-auto text-blue-600" />
+                        <Icon name="Check" size={12} className="ml-auto text-blue-600" />
                       )}
                     </button>
                   ))}
