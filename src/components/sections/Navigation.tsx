@@ -104,11 +104,12 @@ const Navigation = ({
             <div className="relative ml-4 border-l pl-4" ref={languageMenuRef}>
               <button
                 onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
-                className="flex items-center gap-1 p-2 rounded-lg text-2xl hover:bg-gray-100 transition-all"
+                className="flex items-center gap-1 p-2 rounded-lg text-2xl hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 transition-all relative group"
                 title={currentLanguage?.label}
               >
-                <span className={`inline-block transition-all duration-300 hover:scale-110 ${isChanging ? 'flag-change' : ''}`}>{currentLanguage?.flag}</span>
+                <span className={`inline-block transition-all duration-300 group-hover:scale-110 ${isChanging ? 'flag-change' : ''}`}>{currentLanguage?.flag}</span>
                 <Icon name={languageMenuOpen ? 'ChevronUp' : 'ChevronDown'} size={14} className="text-gray-600 transition-transform duration-200" />
+                <span className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-blue-200 transition-colors duration-200"></span>
               </button>
               {languageMenuOpen && (
                 <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-2 animate-in slide-in-from-top-5 duration-200">
@@ -135,11 +136,12 @@ const Navigation = ({
             <div className="md:hidden relative" ref={mobileLanguageMenuRef}>
               <button
                 onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
-                className="flex items-center gap-1 p-1 rounded text-xl hover:bg-gray-100 transition-all"
+                className="flex items-center gap-1 p-1 rounded text-xl hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 transition-all relative group"
                 title={currentLanguage?.label}
               >
-                <span className={`inline-block transition-all duration-300 hover:scale-110 ${isChanging ? 'flag-change' : ''}`}>{currentLanguage?.flag}</span>
+                <span className={`inline-block transition-all duration-300 group-hover:scale-110 ${isChanging ? 'flag-change' : ''}`}>{currentLanguage?.flag}</span>
                 <Icon name={languageMenuOpen ? 'ChevronUp' : 'ChevronDown'} size={12} className="text-gray-600 transition-transform duration-200" />
+                <span className="absolute inset-0 rounded border border-transparent group-hover:border-blue-200 transition-colors duration-200"></span>
               </button>
               {languageMenuOpen && (
                 <div className="absolute top-full right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 py-2 animate-in slide-in-from-top-5 duration-200">
