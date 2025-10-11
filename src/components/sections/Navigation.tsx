@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 
 interface NavigationProps {
@@ -21,6 +21,27 @@ const Navigation = ({
   setLanguage,
 }: NavigationProps) => {
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const languageMenuRef = useRef<HTMLDivElement>(null);
+  const mobileLanguageMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const isOutsideDesktop = languageMenuRef.current && !languageMenuRef.current.contains(event.target as Node);
+      const isOutsideMobile = mobileLanguageMenuRef.current && !mobileLanguageMenuRef.current.contains(event.target as Node);
+      
+      if (isOutsideDesktop && isOutsideMobile) {
+        setLanguageMenuOpen(false);
+      }
+    };
+
+    if (languageMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [languageMenuOpen]);
 
   const navItems = [
     { id: 'home', label: t.nav.home, color: 'from-blue-600 to-cyan-500' },
@@ -73,7 +94,7 @@ const Navigation = ({
                 }`}></span>
               </button>
             ))}
-            <div className="relative ml-4 border-l pl-4">
+            <div className="relative ml-4 border-l pl-4" ref={languageMenuRef}>
               <button
                 onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-all"
@@ -104,7 +125,7 @@ const Navigation = ({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <div className="md:hidden relative">
+            <div className="md:hidden relative" ref={mobileLanguageMenuRef}>
               <button
                 onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
                 className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-gray-600 hover:bg-gray-100 transition-all"
