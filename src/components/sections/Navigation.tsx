@@ -104,27 +104,27 @@ const Navigation = ({
             <div className="relative ml-4 border-l pl-4" ref={languageMenuRef}>
               <button
                 onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
-                className="flex items-center gap-1 p-2 rounded-lg text-2xl hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 transition-all relative group"
+                className="flex items-center gap-1 p-1.5 rounded-lg text-base hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 transition-all relative group"
                 title={currentLanguage?.label}
               >
                 <span className={`inline-block transition-all duration-300 group-hover:scale-110 ${isChanging ? 'flag-change' : ''}`}>{currentLanguage?.flag}</span>
-                <Icon name={languageMenuOpen ? 'ChevronUp' : 'ChevronDown'} size={14} className="text-gray-600 transition-transform duration-200" />
-                <span className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-blue-200 transition-colors duration-200"></span>
+                <Icon name={languageMenuOpen ? 'ChevronUp' : 'ChevronDown'} size={12} className="text-gray-600 transition-transform duration-200" />
+                <span className="absolute inset-0 rounded-lg border border-transparent group-hover:border-blue-200 transition-colors duration-200"></span>
               </button>
               {languageMenuOpen && (
-                <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-2 animate-in slide-in-from-top-5 duration-200">
+                <div className="absolute top-full right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 py-2 animate-in slide-in-from-top-5 duration-200">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
                       onClick={() => handleLanguageChange(lang.code as 'ru' | 'en' | 'zh')}
-                      className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                      className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-gray-100 transition-colors ${
                         language === lang.code ? 'bg-gradient-to-r from-blue-50 to-purple-50' : ''
                       }`}
                     >
-                      <span className="text-lg">{lang.flag}</span>
+                      <span className="text-sm">{lang.flag}</span>
                       <span className="font-medium">{lang.label}</span>
                       {language === lang.code && (
-                        <Icon name="Check" size={14} className="ml-auto text-blue-600" />
+                        <Icon name="Check" size={12} className="ml-auto text-blue-600" />
                       )}
                     </button>
                   ))}
@@ -136,27 +136,27 @@ const Navigation = ({
             <div className="md:hidden relative" ref={mobileLanguageMenuRef}>
               <button
                 onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
-                className="flex items-center gap-1 p-1 rounded text-xl hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 transition-all relative group"
+                className="flex items-center gap-1 p-1 rounded text-sm hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 transition-all relative group"
                 title={currentLanguage?.label}
               >
                 <span className={`inline-block transition-all duration-300 group-hover:scale-110 ${isChanging ? 'flag-change' : ''}`}>{currentLanguage?.flag}</span>
-                <Icon name={languageMenuOpen ? 'ChevronUp' : 'ChevronDown'} size={12} className="text-gray-600 transition-transform duration-200" />
+                <Icon name={languageMenuOpen ? 'ChevronUp' : 'ChevronDown'} size={10} className="text-gray-600 transition-transform duration-200" />
                 <span className="absolute inset-0 rounded border border-transparent group-hover:border-blue-200 transition-colors duration-200"></span>
               </button>
               {languageMenuOpen && (
-                <div className="absolute top-full right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 py-2 animate-in slide-in-from-top-5 duration-200">
+                <div className="absolute top-full right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-gray-200 py-2 animate-in slide-in-from-top-5 duration-200">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
                       onClick={() => handleLanguageChange(lang.code as 'ru' | 'en' | 'zh')}
-                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-gray-100 transition-colors ${
+                      className={`w-full flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-100 transition-colors ${
                         language === lang.code ? 'bg-gradient-to-r from-blue-50 to-purple-50' : ''
                       }`}
                     >
-                      <span className="text-base">{lang.flag}</span>
+                      <span className="text-xs">{lang.flag}</span>
                       <span className="font-medium">{lang.label}</span>
                       {language === lang.code && (
-                        <Icon name="Check" size={12} className="ml-auto text-blue-600" />
+                        <Icon name="Check" size={10} className="ml-auto text-blue-600" />
                       )}
                     </button>
                   ))}
