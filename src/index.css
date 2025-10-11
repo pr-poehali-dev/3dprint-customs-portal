@@ -283,4 +283,23 @@
     top: 100%;
     border-top: 28.87px solid rgba(102, 126, 234, 0.15);
   }
+
+  @keyframes flagChange {
+    0% {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+    50% {
+      opacity: 0;
+      transform: scale(0.8) rotate(180deg);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) rotate(360deg);
+    }
+  }
+
+  .flag-change {
+    animation: flagChange 0.4s ease-in-out;
+  }
 }
