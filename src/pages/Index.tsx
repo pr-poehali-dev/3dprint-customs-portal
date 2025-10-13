@@ -8,6 +8,7 @@ import MaterialsSection from '@/components/sections/MaterialsSection';
 import PortfolioSection from '@/components/sections/PortfolioSection';
 import OrderSection from '@/components/sections/OrderSection';
 import ContactsSection from '@/components/sections/ContactsSection';
+import ClientsSection from '@/components/sections/ClientsSection';
 import Footer from '@/components/sections/Footer';
 import BackgroundShapes from '@/components/BackgroundShapes';
 
@@ -81,6 +82,8 @@ const Index = () => {
       <OrderSection t={t} handleFormSubmit={handleFormSubmit} />
       
       <ContactsSection t={t} />
+      
+      <ClientsSection t={t} />
       
       <Footer />
     </div>

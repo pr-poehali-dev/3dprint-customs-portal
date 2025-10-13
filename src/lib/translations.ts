@@ -143,6 +143,13 @@ export const translations = {
       badge2: '3D моделирование',
       badge3: 'Доставка по всей России',
     },
+    clients: {
+      title: 'Наши клиенты',
+      subtitle: 'Нам доверяют ведущие компании и частные лица',
+      stat1: 'Довольных клиентов',
+      stat2: 'Успешных проектов',
+      stat3: 'Лет на рынке',
+    },
   },
   en: {
     nav: {
@@ -288,6 +295,13 @@ export const translations = {
       badge2: '3D modeling',
       badge3: 'Delivery across Russia',
     },
+    clients: {
+      title: 'Our Clients',
+      subtitle: 'Trusted by leading companies and individuals',
+      stat1: 'Satisfied clients',
+      stat2: 'Successful projects',
+      stat3: 'Years in business',
+    },
   },
   zh: {
     nav: {
@@ -432,6 +446,13 @@ export const translations = {
       badge1: '每天开放',
       badge2: '3D建模',
       badge3: '俄罗斯全境配送',
+    },
+    clients: {
+      title: '我们的客户',
+      subtitle: '领先公司和个人的信赖之选',
+      stat1: '满意的客户',
+      stat2: '成功的项目',
+      stat3: '年市场经验',
     },
   },
 };
