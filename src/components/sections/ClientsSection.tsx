@@ -4,12 +4,30 @@ interface ClientsSectionProps {
 
 const ClientsSection = ({ t }: ClientsSectionProps) => {
   const clients = [
-    { name: 'Yandex', logo: '🟡' },
-    { name: 'Sberbank', logo: '🟢' },
-    { name: 'Gazprom', logo: '🔵' },
-    { name: 'Lukoil', logo: '🔴' },
-    { name: 'Rosneft', logo: '🟠' },
-    { name: 'VTB', logo: '🔵' },
+    { 
+      name: 'Yandex', 
+      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/f59d3d52-10e3-4c65-8448-bb13279fecfa.jpg'
+    },
+    { 
+      name: 'Sberbank', 
+      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/7ea207de-cf56-4c3c-8b4e-2dff9f295eed.jpg'
+    },
+    { 
+      name: 'Gazprom', 
+      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/e158635f-fd30-4ef4-9de2-6642746774ce.jpg'
+    },
+    { 
+      name: 'Rosneft', 
+      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/22e16cd4-4f3c-4d70-86e8-2043b3a1b223.jpg'
+    },
+    { 
+      name: 'VTB', 
+      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/53411f69-7d31-4862-8b22-8f74ca857605.jpg'
+    },
+    { 
+      name: 'Moscow Metro', 
+      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/bd5f4241-5588-4f44-b60a-d1359b199ef9.jpg'
+    },
   ];
 
   return (
@@ -32,8 +50,12 @@ const ClientsSection = ({ t }: ClientsSectionProps) => {
               key={index}
               className="group bg-white/80 backdrop-blur-sm rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-200/50 flex flex-col items-center justify-center"
             >
-              <div className="text-6xl mb-3 group-hover:scale-110 transition-transform duration-300">
-                {client.logo}
+              <div className="w-full h-20 mb-3 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <img 
+                  src={client.logo} 
+                  alt={client.name}
+                  className="max-w-full max-h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
+                />
               </div>
               <p className="text-sm font-semibold text-gray-700 text-center group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
                 {client.name}
