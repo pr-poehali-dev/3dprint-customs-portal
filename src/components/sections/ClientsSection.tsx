@@ -21,8 +21,8 @@ const ClientsSection = ({ t }: ClientsSectionProps) => {
       logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/22e16cd4-4f3c-4d70-86e8-2043b3a1b223.jpg'
     },
     { 
-      name: 'VTB', 
-      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/53411f69-7d31-4862-8b22-8f74ca857605.jpg'
+      name: 'Alfa Bank', 
+      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/eda10eaf-86eb-44ad-b7af-21c03ef0e296.jpg'
     },
     { 
       name: 'Moscow Metro', 
