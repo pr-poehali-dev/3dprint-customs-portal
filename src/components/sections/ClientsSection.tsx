@@ -9,8 +9,8 @@ const ClientsSection = ({ t }: ClientsSectionProps) => {
       logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/f59d3d52-10e3-4c65-8448-bb13279fecfa.jpg'
     },
     { 
-      name: 'Sberbank', 
-      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/7ea207de-cf56-4c3c-8b4e-2dff9f295eed.jpg'
+      name: 'iRayple', 
+      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/ddd1e75f-968d-4590-847d-9ac38cfa2a45.jpg'
     },
     { 
       name: 'Gazprom', 
