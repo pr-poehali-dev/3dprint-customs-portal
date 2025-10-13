@@ -5,7 +5,7 @@ interface MaterialsSectionProps {
   t: any;
   materials: Array<{
     name: string;
-    color: string;
+    image: string;
     props: string;
   }>;
 }
@@ -22,10 +22,16 @@ const MaterialsSection = ({ t, materials }: MaterialsSectionProps) => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {materials.map((material) => (
-            <Card key={material.name} className="hover:shadow-lg transition-all">
+            <Card key={material.name} className="hover:shadow-lg transition-all overflow-hidden">
               <CardHeader>
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 ${material.color} rounded-lg`}></div>
+                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                    <img 
+                      src={material.image} 
+                      alt={material.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div>
                     <CardTitle className="text-xl">{material.name}</CardTitle>
                     <CardDescription>{material.props}</CardDescription>
