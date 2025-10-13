@@ -47,26 +47,32 @@ export const translations = {
       pla: {
         name: 'PLA',
         props: 'Экологичный, доступный',
+        advantages: ['Биоразлагаемый материал', 'Простота печати', 'Широкая цветовая гамма', 'Низкая стоимость'],
       },
       abs: {
         name: 'ABS',
         props: 'Прочный, термостойкий',
+        advantages: ['Высокая прочность', 'Термостойкость до 100°C', 'Ударопрочность', 'Возможность постобработки'],
       },
       petg: {
         name: 'PETG',
         props: 'Гибкий, долговечный',
+        advantages: ['Химическая стойкость', 'Прозрачность', 'Пищевая безопасность', 'Устойчивость к UV'],
       },
       nylon: {
         name: 'Nylon',
         props: 'Износостойкий, прочный',
+        advantages: ['Высокая износостойкость', 'Низкое трение', 'Гибкость', 'Прочность на разрыв'],
       },
       resin: {
         name: 'Resin',
         props: 'Высокая детализация',
+        advantages: ['Точность до 25 микрон', 'Гладкая поверхность', 'Сложная геометрия', 'Идеален для ювелирки'],
       },
       tpu: {
         name: 'TPU',
         props: 'Эластичный, гибкий',
+        advantages: ['Резиноподобная гибкость', 'Стойкость к истиранию', 'Амортизация', 'Масло- и жиростойкость'],
       },
       info: 'Для юридических и физических лиц',
       badge1: 'Скидки для оптовых заказов',
@@ -199,26 +205,32 @@ export const translations = {
       pla: {
         name: 'PLA',
         props: 'Eco-friendly, affordable',
+        advantages: ['Biodegradable material', 'Easy to print', 'Wide color range', 'Low cost'],
       },
       abs: {
         name: 'ABS',
         props: 'Strong, heat-resistant',
+        advantages: ['High strength', 'Heat resistance up to 212°F', 'Impact resistant', 'Post-processing capable'],
       },
       petg: {
         name: 'PETG',
         props: 'Flexible, durable',
+        advantages: ['Chemical resistance', 'Transparency', 'Food safe', 'UV resistant'],
       },
       nylon: {
         name: 'Nylon',
         props: 'Wear-resistant, strong',
+        advantages: ['High wear resistance', 'Low friction', 'Flexibility', 'Tensile strength'],
       },
       resin: {
         name: 'Resin',
         props: 'High detail',
+        advantages: ['Accuracy up to 25 microns', 'Smooth surface', 'Complex geometry', 'Ideal for jewelry'],
       },
       tpu: {
         name: 'TPU',
         props: 'Elastic, flexible',
+        advantages: ['Rubber-like flexibility', 'Abrasion resistance', 'Shock absorption', 'Oil and grease resistant'],
       },
       info: 'For legal entities and individuals',
       badge1: 'Discounts for bulk orders',
@@ -351,26 +363,32 @@ export const translations = {
       pla: {
         name: 'PLA',
         props: '环保、经济',
+        advantages: ['可生物降解材料', '易于打印', '色彩范围广', '低成本'],
       },
       abs: {
         name: 'ABS',
         props: '坚固、耐热',
+        advantages: ['高强度', '耐热至100°C', '抗冲击', '可后处理'],
       },
       petg: {
         name: 'PETG',
         props: '柔韧、耐用',
+        advantages: ['耐化学品', '透明度高', '食品安全', '抗紫外线'],
       },
       nylon: {
         name: 'Nylon',
         props: '耐磨、坚固',
+        advantages: ['高耐磨性', '低摩擦', '柔韧性', '抗拉强度'],
       },
       resin: {
         name: 'Resin',
         props: '高细节',
+        advantages: ['精度达25微米', '表面光滑', '复杂几何', '珠宝理想材料'],
       },
       tpu: {
         name: 'TPU',
         props: '弹性、灵活',
+        advantages: ['橡胶般柔韧', '耐磨损', '减震', '耐油脂'],
       },
       info: '面向法人和个人',
       badge1: '批量订单折扣',

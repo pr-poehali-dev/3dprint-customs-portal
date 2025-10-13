@@ -1,5 +1,6 @@
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardDescription, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import Icon from '@/components/ui/icon';
 
 interface MaterialsSectionProps {
   t: any;
@@ -7,6 +8,7 @@ interface MaterialsSectionProps {
     name: string;
     image: string;
     props: string;
+    advantages: string[];
   }>;
 }
 
@@ -22,14 +24,14 @@ const MaterialsSection = ({ t, materials }: MaterialsSectionProps) => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {materials.map((material) => (
-            <Card key={material.name} className="hover:shadow-lg transition-all overflow-hidden">
+            <Card key={material.name} className="hover:shadow-xl transition-all overflow-hidden group">
               <CardHeader>
                 <div className="flex items-center gap-4">
                   <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
                     <img 
                       src={material.image} 
                       alt={material.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     />
                   </div>
                   <div>
@@ -38,6 +40,16 @@ const MaterialsSection = ({ t, materials }: MaterialsSectionProps) => {
                   </div>
                 </div>
               </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {material.advantages.map((advantage, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-sm text-gray-600">
+                      <Icon name="CheckCircle2" size={16} className="text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>{advantage}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
             </Card>
           ))}
         </div>
