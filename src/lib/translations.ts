@@ -90,6 +90,8 @@ export const translations = {
         { title: 'Цветная печать', desc: 'Цветные и люминесцентные материалы' },
         { title: 'Формы для литья', desc: 'Мастер-модели и литейные формы' },
         { title: 'Постобработка деталей', desc: 'Шлифовка, покраска и финишная обработка' },
+        { title: 'Монтаж метизов', desc: 'Встраивание крепежа в пластиковые конструкции' },
+        { title: 'Производство филамента', desc: 'Изготовление материалов для 3D печати' },
       ],
     },
     order: {
@@ -256,6 +258,8 @@ export const translations = {
         { title: 'Color printing', desc: 'Colored and luminescent materials' },
         { title: 'Casting molds', desc: 'Master models and casting forms' },
         { title: 'Post-processing', desc: 'Sanding, painting, and finishing' },
+        { title: 'Hardware mounting', desc: 'Embedding fasteners into plastic structures' },
+        { title: 'Filament production', desc: 'Manufacturing materials for 3D printing' },
       ],
     },
     order: {
@@ -422,6 +426,8 @@ export const translations = {
         { title: '彩色打印', desc: '彩色和发光材料' },
         { title: '铸造模具', desc: '主模型和铸造形式' },
         { title: '后处理', desc: '打磨、喷漆和精加工' },
+        { title: '五金安装', desc: '将紧固件嵌入塑料结构' },
+        { title: '丝材生产', desc: '3D打印材料制造' },
       ],
     },
     order: {
