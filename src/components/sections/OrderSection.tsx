@@ -110,6 +110,19 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
               </div>
               
               <div className="space-y-2">
+                <Label htmlFor="customer-type">{t.order.customerType}</Label>
+                <Select name="customerType" required>
+                  <SelectTrigger id="customer-type">
+                    <SelectValue placeholder={t.order.customerTypePlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="individual">{t.order.customerTypeOptions.individual}</SelectItem>
+                    <SelectItem value="legal">{t.order.customerTypeOptions.legal}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
                 <Label htmlFor="contact-email">{t.order.email}</Label>
                 <Input id="contact-email" name="email" type="email" placeholder="example@mail.com" required />
               </div>
