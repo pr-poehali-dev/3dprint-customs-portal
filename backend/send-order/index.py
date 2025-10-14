@@ -95,17 +95,61 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             })
         }
     
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = f'Новый заказ на 3D печать №{order_number}'
-    msg['From'] = smtp_user
-    msg['To'] = 'info@3dprintcustoms.ru'
+    msg_company = MIMEMultipart('alternative')
+    msg_company['Subject'] = f'Новый заказ на 3D печать №{order_number}'
+    msg_company['From'] = smtp_user
+    msg_company['To'] = 'info@3dprintcustoms.ru'
+    msg_company.attach(MIMEText(email_body, 'html', 'utf-8'))
     
-    msg.attach(MIMEText(email_body, 'html', 'utf-8'))
+    client_email_body = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color: #2563eb;">Спасибо за ваш заказ!</h2>
+        <p>Ваша заявка успешно принята.</p>
+        
+        <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0;">Номер заказа: <span style="color: #2563eb;">{order_number}</span></h3>
+        </div>
+        
+        <h3>Параметры вашего заказа:</h3>
+        <ul>
+            <li><strong>Размеры:</strong> {body_data.get('length')} x {body_data.get('width')} x {body_data.get('height')} мм</li>
+            <li><strong>Материал:</strong> {body_data.get('plastic')}</li>
+            <li><strong>Цвет:</strong> {body_data.get('color')}</li>
+            <li><strong>Заполнение:</strong> {body_data.get('infill')}%</li>
+            <li><strong>Количество:</strong> {body_data.get('quantity')} шт</li>
+        </ul>
+        
+        {'<h3>Описание:</h3><p>' + body_data.get('description', '') + '</p>' if body_data.get('description') else ''}
+        
+        <div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0;">
+            <p style="margin: 0;"><strong>Мы свяжемся с вами в течение 24 часов</strong> для уточнения деталей и расчета стоимости.</p>
+        </div>
+        
+        <hr style="margin: 30px 0;">
+        
+        <p style="color: #666;">С уважением,<br>Команда 3D Print Customs</p>
+        <p style="color: #666; font-size: 14px;">
+            📧 info@3dprintcustoms.ru<br>
+            📍 г. Москва, ул. Лобановский Лес, дом 11 (м. Прокшино)
+        </p>
+        
+        <p style="color: #999; font-size: 12px; margin-top: 30px;">Дата заказа: {datetime.now().strftime('%d.%m.%Y %H:%M')}</p>
+    </body>
+    </html>
+    """
+    
+    msg_client = MIMEMultipart('alternative')
+    msg_client['Subject'] = f'Ваш заказ на 3D печать №{order_number}'
+    msg_client['From'] = smtp_user
+    msg_client['To'] = body_data.get('email')
+    msg_client.attach(MIMEText(client_email_body, 'html', 'utf-8'))
     
     try:
         with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
             server.login(smtp_user, smtp_password)
-            server.send_message(msg)
+            server.send_message(msg_company)
+            server.send_message(msg_client)
     except Exception as e:
         return {
             'statusCode': 200,
