@@ -27,17 +27,44 @@ const Index = () => {
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
     
-    toast({
-      title: t.order.successTitle,
-      description: `${t.order.successDesc} ${data.email} ${t.order.successTime}`,
-    });
-    
-    e.currentTarget.reset();
+    try {
+      const response = await fetch('https://functions.poehali.dev/f1f77e68-f10f-4dd3-beb4-47bb23587a7c', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        const orderNumberText = typeof t.order.orderNumber !== 'undefined' ? t.order.orderNumber : 'Номер заказа:';
+        toast({
+          title: t.order.successTitle,
+          description: `${t.order.successDesc} ${data.email} ${t.order.successTime}\n\n${orderNumberText} ${result.orderNumber}`,
+        });
+        
+        e.currentTarget.reset();
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось отправить заказ. Попробуйте позже.',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось отправить заказ. Проверьте соединение.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const technologies = [

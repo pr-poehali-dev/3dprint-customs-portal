@@ -126,6 +126,7 @@ export const translations = {
       successTitle: 'Заявка отправлена!',
       successDesc: 'Мы свяжемся с вами по почте',
       successTime: 'в течение 24 часов.',
+      orderNumber: 'Номер заказа:',
       plasticOptions: {
         pla: 'PLA - Экологичный, доступный',
         abs: 'ABS - Прочный, термостойкий',
