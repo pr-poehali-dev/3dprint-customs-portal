@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,6 +13,7 @@ interface OrderSectionProps {
 }
 
 const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
+  const [customerType, setCustomerType] = useState<string>('');
   return (
     <section id="order" className="py-20 px-4 relative">
       <div className="container mx-auto max-w-3xl relative z-10">
@@ -111,7 +113,7 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
               
               <div className="space-y-2">
                 <Label htmlFor="customer-type">{t.order.customerType}</Label>
-                <Select name="customerType" required>
+                <Select name="customerType" required onValueChange={setCustomerType}>
                   <SelectTrigger id="customer-type">
                     <SelectValue placeholder={t.order.customerTypePlaceholder} />
                   </SelectTrigger>
@@ -121,6 +123,20 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
                   </SelectContent>
                 </Select>
               </div>
+              
+              {customerType === 'legal' && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="company-name">{t.order.companyName}</Label>
+                    <Input id="company-name" name="companyName" type="text" placeholder="ООО Рога и копыта" required />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="inn">{t.order.inn}</Label>
+                    <Input id="inn" name="inn" type="text" placeholder="1234567890" required />
+                  </div>
+                </>
+              )}
               
               <div className="space-y-2">
                 <Label htmlFor="contact-email">{t.order.email}</Label>
