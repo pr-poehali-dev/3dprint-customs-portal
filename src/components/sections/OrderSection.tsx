@@ -14,6 +14,20 @@ interface OrderSectionProps {
 
 const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
   const [customerType, setCustomerType] = useState<string>('');
+  const [filePreview, setFilePreview] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string>('');
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFileName(file.name);
+      setFilePreview(file.name);
+    } else {
+      setFileName('');
+      setFilePreview(null);
+    }
+  };
+
   return (
     <section id="order" className="py-20 px-4 relative">
       <div className="container mx-auto max-w-3xl relative z-10">
@@ -97,8 +111,27 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
               
               <div className="space-y-2">
                 <Label htmlFor="model-file">{t.order.file}</Label>
-                <Input id="model-file" name="model" type="file" accept=".stl,.step,.dwg,.obj,.3mf" />
+                <Input 
+                  id="model-file" 
+                  name="model" 
+                  type="file" 
+                  accept=".stl,.step,.dwg,.obj,.3mf"
+                  onChange={handleFileChange}
+                />
                 <p className="text-xs text-gray-500">{t.order.fileFormats}</p>
+                
+                {filePreview && (
+                  <div className="mt-3 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg flex items-center gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Icon name="File" className="text-blue-600" size={20} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">{fileName}</p>
+                      <p className="text-xs text-gray-500">Файл готов к отправке</p>
+                    </div>
+                    <Icon name="CheckCircle2" className="text-green-500 flex-shrink-0" size={20} />
+                  </div>
+                )}
               </div>
               
               <div className="space-y-2">
