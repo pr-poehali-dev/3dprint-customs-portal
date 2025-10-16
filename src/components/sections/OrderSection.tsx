@@ -28,6 +28,15 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
     }
   };
 
+  const handleRemoveFile = () => {
+    setFileName('');
+    setFilePreview(null);
+    const fileInput = document.getElementById('model-file') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
+
   return (
     <section id="order" className="py-20 px-4 relative">
       <div className="container mx-auto max-w-3xl relative z-10">
@@ -130,6 +139,14 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
                       <p className="text-xs text-gray-500">Файл готов к отправке</p>
                     </div>
                     <Icon name="CheckCircle2" className="text-green-500 flex-shrink-0" size={20} />
+                    <button
+                      type="button"
+                      onClick={handleRemoveFile}
+                      className="flex-shrink-0 w-8 h-8 rounded-full hover:bg-red-100 flex items-center justify-center transition-colors group"
+                      aria-label="Удалить файл"
+                    >
+                      <Icon name="X" className="text-gray-400 group-hover:text-red-600" size={18} />
+                    </button>
                   </div>
                 )}
               </div>
