@@ -16,10 +16,23 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
   const [customerType, setCustomerType] = useState<string>('');
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>('');
+  const [fileError, setFileError] = useState<string>('');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    setFileError('');
+    
     if (file) {
+      const maxSize = 50 * 1024 * 1024;
+      
+      if (file.size > maxSize) {
+        setFileError('Файл слишком большой. Максимальный размер: 50 МБ');
+        setFileName('');
+        setFilePreview(null);
+        e.target.value = '';
+        return;
+      }
+      
       setFileName(file.name);
       setFilePreview(file.name);
     } else {
@@ -31,6 +44,7 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
   const handleRemoveFile = () => {
     setFileName('');
     setFilePreview(null);
+    setFileError('');
     const fileInput = document.getElementById('model-file') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
@@ -128,6 +142,13 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
                   onChange={handleFileChange}
                 />
                 <p className="text-xs text-gray-500">{t.order.fileFormats}</p>
+                
+                {fileError && (
+                  <div className="mt-3 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
+                    <Icon name="AlertCircle" className="text-red-600 flex-shrink-0" size={20} />
+                    <p className="text-sm text-red-700">{fileError}</p>
+                  </div>
+                )}
                 
                 {filePreview && (
                   <div className="mt-3 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg flex items-center gap-3">
