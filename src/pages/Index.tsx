@@ -30,7 +30,40 @@ const Index = () => {
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
+    const file = formData.get('model') as File;
+    
+    let fileBase64 = '';
+    let fileName = '';
+    
+    if (file && file.size > 0) {
+      fileName = file.name;
+      const reader = new FileReader();
+      fileBase64 = await new Promise<string>((resolve) => {
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+          resolve(base64.split(',')[1]);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    
+    const data = {
+      length: formData.get('length'),
+      width: formData.get('width'),
+      height: formData.get('height'),
+      plastic: formData.get('plastic'),
+      color: formData.get('color'),
+      infill: formData.get('infill'),
+      quantity: formData.get('quantity'),
+      description: formData.get('description'),
+      customerType: formData.get('customerType'),
+      companyName: formData.get('companyName'),
+      inn: formData.get('inn'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      fileName,
+      fileBase64,
+    };
     
     try {
       const response = await fetch('https://functions.poehali.dev/f1f77e68-f10f-4dd3-beb4-47bb23587a7c', {

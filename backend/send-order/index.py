@@ -8,8 +8,11 @@ Returns: HTTP response с номером заказа
 import json
 import smtplib
 import os
+import base64
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
 from datetime import datetime
 from typing import Dict, Any
 
@@ -67,6 +70,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             <li><strong>Телефон:</strong> {body_data.get('phone', 'Не указан')}</li>
         </ul>
         
+        {'<h3>Файл модели:</h3><p>✅ Файл прикреплен: <strong>' + body_data.get('fileName', '') + '</strong></p>' if body_data.get('fileName') else '<p>❌ Файл не прикреплен</p>'}
+        
         <h3>Описание:</h3>
         <p>{body_data.get('description', 'Не указано')}</p>
         
@@ -95,11 +100,23 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             })
         }
     
-    msg_company = MIMEMultipart('alternative')
+    msg_company = MIMEMultipart()
     msg_company['Subject'] = f'Новый заказ на 3D печать №{order_number}'
     msg_company['From'] = smtp_user
     msg_company['To'] = 'info@3dprintcustoms.ru'
     msg_company.attach(MIMEText(email_body, 'html', 'utf-8'))
+    
+    file_base64 = body_data.get('fileBase64', '')
+    file_name = body_data.get('fileName', '')
+    
+    if file_base64 and file_name:
+        file_data = base64.b64decode(file_base64)
+        
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(file_data)
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', f'attachment; filename={file_name}')
+        msg_company.attach(part)
     
     client_email_body = f"""
     <html>
@@ -150,7 +167,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             server.login(smtp_user, smtp_password)
             server.send_message(msg_company)
             server.send_message(msg_client)
-    except Exception as e:
+    except (smtplib.SMTPException, OSError) as e:
         return {
             'statusCode': 200,
             'headers': {
