@@ -7,6 +7,7 @@ interface PortfolioSectionProps {
   portfolio: Array<{
     title: string;
     desc: string;
+    image?: string;
   }>;
 }
 
@@ -23,9 +24,13 @@ const PortfolioSection = ({ t, portfolio }: PortfolioSectionProps) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {portfolio.map((item, index) => (
             <Card key={index} className="group overflow-hidden hover:shadow-xl transition-all border-2 hover:border-primary cursor-pointer">
-              <div className="h-64 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10"></div>
-                <Icon name="Box" className="text-gray-300 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500" size={120} />
+              <div className="h-64 relative overflow-hidden bg-gray-100">
+                <img 
+                  src={item.image} 
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
               <CardHeader>
                 <CardTitle className="text-2xl">{item.title}</CardTitle>

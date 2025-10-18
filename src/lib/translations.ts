@@ -84,12 +84,36 @@ export const translations = {
       subtitle: 'Образцы выполненных проектов',
       detailsBtn: 'Подробнее',
       items: [
-        { title: 'Архитектурные модели', desc: 'Прототипы зданий и сооружений' },
-        { title: 'Промышленные детали', desc: 'Функциональные запчасти и механизмы' },
-        { title: 'Дизайнерские изделия', desc: 'Уникальные декоративные объекты' },
-        { title: 'Цветная печать', desc: 'Цветные и люминесцентные материалы' },
-        { title: 'Формы для литья', desc: 'Мастер-модели и литейные формы' },
-        { title: 'Постобработка деталей', desc: 'Шлифовка, покраска и финишная обработка' },
+        { 
+          title: 'Архитектурные модели', 
+          desc: 'Прототипы зданий и сооружений',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/c9bfcd24-ae58-41ef-bd0a-90e33c1b3557.jpg'
+        },
+        { 
+          title: 'Промышленные детали', 
+          desc: 'Функциональные запчасти и механизмы',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/84d28802-e49a-425e-a385-a6bd3bf4c5d5.jpg'
+        },
+        { 
+          title: 'Дизайнерские изделия', 
+          desc: 'Уникальные декоративные объекты',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/b9211d56-3f59-4fc7-98e9-529feb4597ca.jpg'
+        },
+        { 
+          title: 'Цветная печать', 
+          desc: 'Цветные и люминесцентные материалы',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/1588175e-f698-4e69-b9b1-ead3a078f95d.jpg'
+        },
+        { 
+          title: 'Формы для литья', 
+          desc: 'Мастер-модели и литейные формы',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/c9bfcd24-ae58-41ef-bd0a-90e33c1b3557.jpg'
+        },
+        { 
+          title: 'Постобработка деталей', 
+          desc: 'Шлифовка, покраска и финишная обработка',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/84d28802-e49a-425e-a385-a6bd3bf4c5d5.jpg'
+        },
         { title: 'Монтаж метизов', desc: 'Встраивание крепежа в пластиковые конструкции' },
         { title: 'Производство филамента', desc: 'Изготовление материалов для 3D печати' },
       ],
@@ -253,14 +277,46 @@ export const translations = {
       subtitle: 'Examples of completed projects',
       detailsBtn: 'Details',
       items: [
-        { title: 'Architectural models', desc: 'Building and structure prototypes' },
-        { title: 'Industrial parts', desc: 'Functional parts and mechanisms' },
-        { title: 'Designer products', desc: 'Unique decorative objects' },
-        { title: 'Color printing', desc: 'Colored and luminescent materials' },
-        { title: 'Casting molds', desc: 'Master models and casting forms' },
-        { title: 'Post-processing', desc: 'Sanding, painting, and finishing' },
-        { title: 'Hardware mounting', desc: 'Embedding fasteners into plastic structures' },
-        { title: 'Filament production', desc: 'Manufacturing materials for 3D printing' },
+        { 
+          title: 'Architectural models', 
+          desc: 'Building and structure prototypes',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/c9bfcd24-ae58-41ef-bd0a-90e33c1b3557.jpg'
+        },
+        { 
+          title: 'Industrial parts', 
+          desc: 'Functional parts and mechanisms',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/84d28802-e49a-425e-a385-a6bd3bf4c5d5.jpg'
+        },
+        { 
+          title: 'Designer products', 
+          desc: 'Unique decorative objects',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/b9211d56-3f59-4fc7-98e9-529feb4597ca.jpg'
+        },
+        { 
+          title: 'Color printing', 
+          desc: 'Colored and luminescent materials',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/1588175e-f698-4e69-b9b1-ead3a078f95d.jpg'
+        },
+        { 
+          title: 'Casting molds', 
+          desc: 'Master models and casting forms',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/c9bfcd24-ae58-41ef-bd0a-90e33c1b3557.jpg'
+        },
+        { 
+          title: 'Post-processing', 
+          desc: 'Sanding, painting, and finishing',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/84d28802-e49a-425e-a385-a6bd3bf4c5d5.jpg'
+        },
+        { 
+          title: 'Hardware mounting', 
+          desc: 'Embedding fasteners into plastic structures',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/b9211d56-3f59-4fc7-98e9-529feb4597ca.jpg'
+        },
+        { 
+          title: 'Filament production', 
+          desc: 'Manufacturing materials for 3D printing',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/1588175e-f698-4e69-b9b1-ead3a078f95d.jpg'
+        },
       ],
     },
     order: {
@@ -421,14 +477,46 @@ export const translations = {
       subtitle: '已完成项目示例',
       detailsBtn: '详情',
       items: [
-        { title: '建筑模型', desc: '建筑和结构原型' },
-        { title: '工业零件', desc: '功能零件和机械装置' },
-        { title: '设计产品', desc: '独特的装饰物品' },
-        { title: '彩色打印', desc: '彩色和发光材料' },
-        { title: '铸造模具', desc: '主模型和铸造形式' },
-        { title: '后处理', desc: '打磨、喷漆和精加工' },
-        { title: '五金安装', desc: '将紧固件嵌入塑料结构' },
-        { title: '丝材生产', desc: '3D打印材料制造' },
+        { 
+          title: '建筑模型', 
+          desc: '建筑和结构原型',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/c9bfcd24-ae58-41ef-bd0a-90e33c1b3557.jpg'
+        },
+        { 
+          title: '工业零件', 
+          desc: '功能零件和机械装置',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/84d28802-e49a-425e-a385-a6bd3bf4c5d5.jpg'
+        },
+        { 
+          title: '设计产品', 
+          desc: '独特的装饰物品',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/b9211d56-3f59-4fc7-98e9-529feb4597ca.jpg'
+        },
+        { 
+          title: '彩色打印', 
+          desc: '彩色和发光材料',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/1588175e-f698-4e69-b9b1-ead3a078f95d.jpg'
+        },
+        { 
+          title: '铸造模具', 
+          desc: '主模型和铸造形式',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/c9bfcd24-ae58-41ef-bd0a-90e33c1b3557.jpg'
+        },
+        { 
+          title: '后处理', 
+          desc: '打磨、喷漆和精加工',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/84d28802-e49a-425e-a385-a6bd3bf4c5d5.jpg'
+        },
+        { 
+          title: '五金安装', 
+          desc: '将紧固件嵌入塑料结构',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/b9211d56-3f59-4fc7-98e9-529feb4597ca.jpg'
+        },
+        { 
+          title: '丝材生产', 
+          desc: '3D打印材料制造',
+          image: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/1588175e-f698-4e69-b9b1-ead3a078f95d.jpg'
+        },
       ],
     },
     order: {
