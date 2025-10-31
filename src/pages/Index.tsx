@@ -74,19 +74,24 @@ const Index = () => {
         body: JSON.stringify(data),
       });
       
+      if (!response.ok) {
+        throw new Error(`Ошибка сервера: ${response.status}`);
+      }
+      
       const result = await response.json();
       
       if (result.success) {
         const orderNumberText = typeof t.order.orderNumber !== 'undefined' ? t.order.orderNumber : 'Номер заказа:';
         toast({
-          title: t.order.successTitle,
-          description: `${t.order.successDesc} ${data.email} ${t.order.successTime}\n\n${orderNumberText} ${result.orderNumber}`,
+          title: '✅ ' + t.order.successTitle,
+          description: `${t.order.successDesc} ${data.email}.\n\n${orderNumberText} ${result.orderNumber}\n\n${t.order.successTime}`,
+          duration: 7000,
         });
         
         e.currentTarget.reset();
       } else {
         toast({
-          title: 'Ошибка',
+          title: '❌ Ошибка',
           description: 'Не удалось отправить заказ. Попробуйте позже.',
           variant: 'destructive',
         });
