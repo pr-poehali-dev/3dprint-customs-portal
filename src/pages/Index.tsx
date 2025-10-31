@@ -92,9 +92,10 @@ const Index = () => {
         });
       }
     } catch (error) {
+      console.error('Ошибка отправки заказа:', error);
       toast({
         title: 'Ошибка',
-        description: 'Не удалось отправить заказ. Проверьте соединение.',
+        description: `Не удалось отправить заказ: ${error instanceof Error ? error.message : 'Проверьте соединение'}`,
         variant: 'destructive',
       });
     }
