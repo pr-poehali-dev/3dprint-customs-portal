@@ -86,6 +86,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     smtp_user = os.environ.get('SMTP_USER', '')
     smtp_password = os.environ.get('SMTP_PASSWORD', '')
     
+    print(f"SMTP Config: server={smtp_server}, port={smtp_port}, user={'SET' if smtp_user else 'NOT SET'}, password={'SET' if smtp_password else 'NOT SET'}")
+    
     if not smtp_user or not smtp_password:
         return {
             'statusCode': 200,
@@ -163,12 +165,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     msg_client.attach(MIMEText(client_email_body, 'html', 'utf-8'))
     
     try:
+        print(f"Connecting to SMTP: {smtp_server}:{smtp_port}")
         with smtplib.SMTP(smtp_server, smtp_port) as server:
+            print("Starting TLS...")
             server.starttls()
+            print("Logging in...")
             server.login(smtp_user, smtp_password)
+            print("Sending email to company...")
             server.send_message(msg_company)
+            print("Sending email to client...")
             server.send_message(msg_client)
+            print("Emails sent successfully!")
     except (smtplib.SMTPException, OSError) as e:
+        print(f"SMTP Error: {type(e).__name__}: {str(e)}")
         return {
             'statusCode': 200,
             'headers': {
