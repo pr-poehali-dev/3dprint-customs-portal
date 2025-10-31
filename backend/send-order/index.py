@@ -105,7 +105,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     msg_company = MIMEMultipart()
     msg_company['Subject'] = f'Новый заказ на 3D печать №{order_number}'
     msg_company['From'] = smtp_user
-    msg_company['To'] = 'zakaz@3dprintcustoms.ru'
+    msg_company['To'] = 'zakaz@3dprintcustom.ru'
     msg_company.attach(MIMEText(email_body, 'html', 'utf-8'))
     
     file_base64 = body_data.get('fileBase64', '')
@@ -147,9 +147,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         <hr style="margin: 30px 0;">
         
-        <p style="color: #666;">С уважением,<br>Команда 3D Print Customs</p>
+        <p style="color: #666;">С уважением,<br>Команда 3D Print Custom</p>
         <p style="color: #666; font-size: 14px;">
-            📧 info@3dprintcustoms.ru<br>
+            📧 zakaz@3dprintcustom.ru<br>
             📍 г. Москва, ул. Лобановский Лес, дом 11 (м. Прокшино)
         </p>
         
