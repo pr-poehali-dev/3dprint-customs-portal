@@ -5,13 +5,13 @@ const Footer = () => {
         <div className="flex items-center justify-center gap-3 mb-6">
           <img 
             src="https://cdn.poehali.dev/files/3c3906bd-e851-4dbd-8fe8-2b8a7acff3cc.jpg" 
-            alt="3DPrintCustoms Logo" 
+            alt="3DPrintCustom Logo" 
             className="w-12 h-12 object-contain rounded-xl"
           />
-          <h3 className="text-2xl font-bold">3DPrintCustoms</h3>
+          <h3 className="text-2xl font-bold">3DPrintCustom</h3>
         </div>
         <p className="text-gray-300 mb-4">Инновационные технологии 3D-печати для вашего бизнеса</p>
-        <p className="text-gray-400 text-sm">© 2024 3DPrintCustoms. Все права защищены.</p>
+        <p className="text-gray-400 text-sm">© 2024 3DPrintCustom. Все права защищены.</p>
       </div>
     </footer>
   );
