@@ -103,7 +103,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     msg_company = MIMEMultipart()
     msg_company['Subject'] = f'Новый заказ на 3D печать №{order_number}'
     msg_company['From'] = smtp_user
-    msg_company['To'] = 'info@3dprintcustoms.ru'
+    msg_company['To'] = 'zakaz@3dprintcustoms.ru'
     msg_company.attach(MIMEText(email_body, 'html', 'utf-8'))
     
     file_base64 = body_data.get('fileBase64', '')
