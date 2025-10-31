@@ -17,6 +17,8 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>('');
   const [fileError, setFileError] = useState<string>('');
+  const [plastic, setPlastic] = useState<string>('');
+  const [color, setColor] = useState<string>('');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,7 +87,7 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
               
               <div className="space-y-2">
                 <Label htmlFor="plastic-type">{t.order.plastic}</Label>
-                <Select name="plastic" required>
+                <Select value={plastic} onValueChange={setPlastic} required>
                   <SelectTrigger id="plastic-type">
                     <SelectValue placeholder={t.order.plasticPlaceholder} />
                   </SelectTrigger>
@@ -98,11 +100,12 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
                     <SelectItem value="tpu">{t.order.plasticOptions.tpu}</SelectItem>
                   </SelectContent>
                 </Select>
+                <input type="hidden" name="plastic" value={plastic} />
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="color">{t.order.color}</Label>
-                <Select name="color" required>
+                <Select value={color} onValueChange={setColor} required>
                   <SelectTrigger id="color">
                     <SelectValue placeholder={t.order.colorPlaceholder} />
                   </SelectTrigger>
@@ -120,6 +123,7 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
                     <SelectItem value="custom">{t.order.colorOptions.custom}</SelectItem>
                   </SelectContent>
                 </Select>
+                <input type="hidden" name="color" value={color} />
               </div>
               
               <div className="space-y-2">
@@ -184,7 +188,7 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
               
               <div className="space-y-2">
                 <Label htmlFor="customer-type">{t.order.customerType}</Label>
-                <Select name="customerType" required onValueChange={setCustomerType}>
+                <Select value={customerType} onValueChange={setCustomerType} required>
                   <SelectTrigger id="customer-type">
                     <SelectValue placeholder={t.order.customerTypePlaceholder} />
                   </SelectTrigger>
@@ -193,6 +197,7 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
                     <SelectItem value="legal">{t.order.customerTypeOptions.legal}</SelectItem>
                   </SelectContent>
                 </Select>
+                <input type="hidden" name="customerType" value={customerType} />
               </div>
               
               {customerType === 'legal' && (
