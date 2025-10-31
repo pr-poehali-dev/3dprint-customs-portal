@@ -81,8 +81,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     </html>
     """
     
-    smtp_server = os.environ.get('SMTP_SERVER', 'mail.3dprintcustoms.ru')
-    smtp_port = int(os.environ.get('SMTP_PORT', '587'))
+    smtp_server = os.environ.get('SMTP_SERVER', 'mail.3dprintcustom.ru')
+    smtp_port = int(os.environ.get('SMTP_PORT', '465'))
     smtp_user = os.environ.get('SMTP_USER', '')
     smtp_password = os.environ.get('SMTP_PASSWORD', '')
     
@@ -165,10 +165,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     msg_client.attach(MIMEText(client_email_body, 'html', 'utf-8'))
     
     try:
-        print(f"Connecting to SMTP: {smtp_server}:{smtp_port}")
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            print("Starting TLS...")
-            server.starttls()
+        print(f"Connecting to SMTP SSL: {smtp_server}:{smtp_port}")
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
             print("Logging in...")
             server.login(smtp_user, smtp_password)
             print("Sending email to company...")
