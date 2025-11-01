@@ -84,7 +84,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     smtp_server = 'smtp.hosting.reg.ru'
     smtp_port = 587
     smtp_user = 'zakaz@3dprintcustom.ru'
-    smtp_password = os.environ.get('SMTP_PASSWORD', '')
+    smtp_password = os.environ.get('SMTP_PASSWORD', 'rS9aF7pO6shV3lQ0')
     
     print(f"SMTP Config: server={smtp_server}, port={smtp_port}, user={smtp_user}, password={'SET' if smtp_password else 'NOT SET'}")
     
