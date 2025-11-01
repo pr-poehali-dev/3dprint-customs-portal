@@ -87,14 +87,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     smtp_user = smtp_user_short if '@' in smtp_user_short else f'{smtp_user_short}@3dprintcustom.ru'
     smtp_password = 'rS9aF7pO6shV3lQ0'
     
-    print(f"=== SMTP DEBUG ===")
-    print(f"Server: {smtp_server}")
-    print(f"Port: {smtp_port}")
-    print(f"User (original): {smtp_user_short}")
-    print(f"User (final): {smtp_user}")
-    print(f"Password length: {len(smtp_password) if smtp_password else 0}")
-    print(f"Password FULL: {smtp_password}")
-    print(f"====================")
+
     
     if not smtp_user or not smtp_password:
         print("⚠️ SMTP not configured - saving order data only")
