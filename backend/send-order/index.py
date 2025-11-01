@@ -85,7 +85,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     smtp_port = 587
     smtp_user_short = os.environ.get('SMTP_USER_SHORT', 'zakaz')
     smtp_user = smtp_user_short if '@' in smtp_user_short else f'{smtp_user_short}@3dprintcustom.ru'
-    smtp_password = os.environ.get('SMTP_PASSWORD_NEW', os.environ.get('SMTP_PASSWORD', ''))
+    smtp_password = 'rS9aF7pO6shV3lQ0'
     
     print(f"=== SMTP DEBUG ===")
     print(f"Server: {smtp_server}")
