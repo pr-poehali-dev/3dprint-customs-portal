@@ -26,10 +26,10 @@ const OrderSection = ({ t, handleFormSubmit, isSubmitting = false }: OrderSectio
     setFileError('');
     
     if (file) {
-      const maxSize = 50 * 1024 * 1024;
+      const maxSize = 7 * 1024 * 1024;
       
       if (file.size > maxSize) {
-        setFileError('Файл слишком большой. Максимальный размер: 50 МБ');
+        setFileError('Файл слишком большой. Максимальный размер: 7 МБ. Для больших файлов отправьте на zakaz@3dprintcustom.ru');
         setFileName('');
         setFilePreview(null);
         e.target.value = '';
