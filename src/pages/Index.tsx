@@ -57,16 +57,23 @@ const Index = () => {
     let fileBase64 = '';
     let fileName = '';
     
+    console.log('📎 File from form:', file, 'Size:', file?.size);
+    
     if (file && file.size > 0) {
       fileName = file.name;
+      console.log('📤 Reading file:', fileName);
       const reader = new FileReader();
       fileBase64 = await new Promise<string>((resolve) => {
         reader.onloadend = () => {
           const base64 = reader.result as string;
-          resolve(base64.split(',')[1]);
+          const base64Data = base64.split(',')[1];
+          console.log('✅ File converted to base64, length:', base64Data.length);
+          resolve(base64Data);
         };
         reader.readAsDataURL(file);
       });
+    } else {
+      console.log('⚠️ No file selected or file size is 0');
     }
     
     const data = {
@@ -86,6 +93,8 @@ const Index = () => {
       fileName,
       fileBase64,
     };
+    
+    console.log('📦 Sending data:', { ...data, fileBase64: fileBase64 ? `${fileBase64.substring(0, 50)}... (${fileBase64.length} chars)` : 'empty' });
     
     try {
       const controller = new AbortController();
