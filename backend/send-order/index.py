@@ -81,9 +81,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     </html>
     """
     
-    smtp_server = os.environ.get('SMTP_SERVER', 'mail.3dprintcustom.ru')
-    smtp_port = int(os.environ.get('SMTP_PORT', '465'))
-    smtp_user = os.environ.get('SMTP_USER_SHORT', os.environ.get('SMTP_USER', ''))
+    smtp_server = os.environ.get('SMTP_SERVER', 'smtp.hosting.reg.ru')
+    smtp_port = int(os.environ.get('SMTP_PORT', '587'))
+    smtp_user = os.environ.get('SMTP_USER_SHORT', '')
+    if not smtp_user:
+        smtp_user = 'zakaz@3dprintcustom.ru'
     smtp_password = os.environ.get('SMTP_PASSWORD', '')
     
     print(f"SMTP Config: server={smtp_server}, port={smtp_port}, user={smtp_user}, password={'SET' if smtp_password else 'NOT SET'}")
@@ -165,8 +167,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     msg_client.attach(MIMEText(client_email_body, 'html', 'utf-8'))
     
     try:
-        print(f"Connecting to SMTP SSL: {smtp_server}:{smtp_port}")
-        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+        print(f"Connecting to SMTP: {smtp_server}:{smtp_port}")
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()
             print("Logging in...")
             server.login(smtp_user, smtp_password)
             print("Sending email to company...")
