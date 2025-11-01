@@ -171,19 +171,40 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     msg_client['To'] = body_data.get('email')
     msg_client.attach(MIMEText(client_email_body, 'html', 'utf-8'))
     
-    try:
-        print(f"Connecting to SMTP: {smtp_server}:{smtp_port}")
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()
-            print("Logging in...")
-            server.login(smtp_user, smtp_password)
-            print("Sending email to company...")
-            server.send_message(msg_company)
-            print("Sending email to client...")
-            server.send_message(msg_client)
-            print("Emails sent successfully!")
-    except (smtplib.SMTPException, OSError) as e:
-        print(f"SMTP Error: {type(e).__name__}: {str(e)}")
+    ports_to_try = [587, 465, 25]
+    last_error = None
+    
+    for port in ports_to_try:
+        try:
+            print(f"Trying SMTP: {smtp_server}:{port}")
+            
+            if port == 465:
+                print("Using SSL connection (port 465)")
+                with smtplib.SMTP_SSL(smtp_server, port) as server:
+                    print("Logging in...")
+                    server.login(smtp_user, smtp_password)
+                    print("Sending emails...")
+                    server.send_message(msg_company)
+                    server.send_message(msg_client)
+                    print(f"✅ Success with port {port}!")
+                    break
+            else:
+                print(f"Using STARTTLS connection (port {port})")
+                with smtplib.SMTP(smtp_server, port, timeout=10) as server:
+                    server.starttls()
+                    print("Logging in...")
+                    server.login(smtp_user, smtp_password)
+                    print("Sending emails...")
+                    server.send_message(msg_company)
+                    server.send_message(msg_client)
+                    print(f"✅ Success with port {port}!")
+                    break
+        except (smtplib.SMTPException, OSError) as e:
+            last_error = e
+            print(f"❌ Port {port} failed: {type(e).__name__}: {str(e)}")
+            continue
+    else:
+        print(f"All ports failed. Last error: {last_error}")
         return {
             'statusCode': 200,
             'headers': {
@@ -193,7 +214,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({
                 'success': True,
                 'orderNumber': order_number,
-                'message': f'Demo mode: {str(e)}'
+                'message': f'Demo mode: All SMTP ports failed'
             })
         }
     
