@@ -86,7 +86,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     smtp_user = os.environ.get('SMTP_USER_SHORT', 'zakaz@3dprintcustom.ru')
     smtp_password = os.environ.get('SMTP_PASSWORD', '')
     
-    print(f"SMTP Config: server={smtp_server}, port={smtp_port}, user={smtp_user}, password={'SET' if smtp_password else 'NOT SET'}")
+    print(f"=== SMTP DEBUG ===")
+    print(f"Server: {smtp_server}")
+    print(f"Port: {smtp_port}")
+    print(f"User: {smtp_user}")
+    print(f"Password length: {len(smtp_password) if smtp_password else 0}")
+    print(f"Password first 3 chars: {smtp_password[:3] if smtp_password else 'EMPTY'}***")
+    print(f"All env vars with SMTP: {[(k, v[:10] + '...' if len(v) > 10 else v) for k, v in os.environ.items() if 'SMTP' in k]}")
+    print(f"====================")
     
     if not smtp_user or not smtp_password:
         return {
