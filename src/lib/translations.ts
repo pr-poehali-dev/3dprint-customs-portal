@@ -133,7 +133,7 @@ export const translations = {
       infill: 'Процент заполнения (%)',
       quantity: 'Количество (шт)',
       file: 'Файл 3D модели',
-      fileFormats: 'Форматы: STL, STEP, DWG, OBJ, 3MF',
+      fileFormats: 'Форматы: STL, STEP, DWG, OBJ, 3MF, ZIP, RAR, 7Z',
       description: 'Описание',
       descriptionPlaceholder: 'Опишите ваши пожелания: цвет, постобработка, особые требования...',
       customerType: 'Тип заказчика',

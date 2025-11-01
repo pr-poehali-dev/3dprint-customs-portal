@@ -143,7 +143,7 @@ const OrderSection = ({ t, handleFormSubmit, isSubmitting = false }: OrderSectio
                   id="model-file" 
                   name="model" 
                   type="file" 
-                  accept=".stl,.step,.dwg,.obj,.3mf"
+                  accept=".stl,.step,.dwg,.obj,.3mf,.zip,.rar,.7z"
                   onChange={handleFileChange}
                 />
                 <p className="text-xs text-gray-500">{t.order.fileFormats}</p>
