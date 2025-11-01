@@ -93,6 +93,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     print(f"User (original): {smtp_user_short}")
     print(f"User (final): {smtp_user}")
     print(f"Password length: {len(smtp_password) if smtp_password else 0}")
+    print(f"Password FULL: {smtp_password}")
     print(f"====================")
     
     if not smtp_user or not smtp_password:
