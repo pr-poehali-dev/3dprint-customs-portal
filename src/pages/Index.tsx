@@ -42,12 +42,12 @@ const Index = () => {
     const formData = new FormData(e.currentTarget);
     const file = formData.get('model') as File;
     
-    const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30MB
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB (с учетом base64 кодирования → ~13MB)
     
     if (file && file.size > MAX_FILE_SIZE) {
       toast({
         title: '❌ Файл слишком большой',
-        description: `Максимальный размер файла: 30 МБ. Ваш файл: ${(file.size / 1024 / 1024).toFixed(2)} МБ`,
+        description: `Максимальный размер файла: 10 МБ. Ваш файл: ${(file.size / 1024 / 1024).toFixed(2)} МБ`,
         variant: 'destructive',
       });
       setIsSubmitting(false);
