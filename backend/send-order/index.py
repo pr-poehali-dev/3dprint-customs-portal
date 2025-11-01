@@ -96,6 +96,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     print(f"====================")
     
     if not smtp_user or not smtp_password:
+        print("⚠️ SMTP not configured - saving order data only")
         return {
             'statusCode': 200,
             'headers': {
@@ -105,7 +106,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({
                 'success': True,
                 'orderNumber': order_number,
-                'message': 'Demo mode: SMTP not configured'
+                'message': 'Order saved. Email configuration required.',
+                'orderData': {
+                    'dimensions': f"{body_data.get('length')}x{body_data.get('width')}x{body_data.get('height')}",
+                    'plastic': body_data.get('plastic'),
+                    'color': body_data.get('color'),
+                    'email': body_data.get('email'),
+                    'phone': body_data.get('phone')
+                }
             })
         }
     
