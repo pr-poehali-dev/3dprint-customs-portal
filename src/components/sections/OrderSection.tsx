@@ -10,9 +10,10 @@ import Icon from '@/components/ui/icon';
 interface OrderSectionProps {
   t: any;
   handleFormSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  isSubmitting?: boolean;
 }
 
-const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
+const OrderSection = ({ t, handleFormSubmit, isSubmitting = false }: OrderSectionProps) => {
   const [customerType, setCustomerType] = useState<string>('');
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>('');
@@ -224,9 +225,18 @@ const OrderSection = ({ t, handleFormSubmit }: OrderSectionProps) => {
                 <Input id="contact-phone" name="phone" type="tel" placeholder="+7 (999) 123-45-67" />
               </div>
               
-              <Button type="submit" size="lg" className="w-full text-lg py-6">
-                <Icon name="Send" className="mr-2" size={20} />
-                {t.order.submit}
+              <Button type="submit" size="lg" className="w-full text-lg py-6" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Icon name="Loader2" className="mr-2 animate-spin" size={20} />
+                    Отправка...
+                  </>
+                ) : (
+                  <>
+                    <Icon name="Send" className="mr-2" size={20} />
+                    {t.order.submit}
+                  </>
+                )}
               </Button>
             </form>
           </CardContent>

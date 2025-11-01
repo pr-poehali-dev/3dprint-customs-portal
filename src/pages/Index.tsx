@@ -17,6 +17,7 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [language, setLanguage] = useState<'ru' | 'en' | 'zh'>('ru');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const t = translations[language];
 
@@ -29,6 +30,15 @@ const Index = () => {
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    
+    toast({
+      title: '⏳ Отправка заказа...',
+      description: 'Пожалуйста, подождите',
+      duration: 2000,
+    });
     const formData = new FormData(e.currentTarget);
     const file = formData.get('model') as File;
     
@@ -66,13 +76,19 @@ const Index = () => {
     };
     
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      
       const response = await fetch('https://functions.poehali.dev/f1f77e68-f10f-4dd3-beb4-47bb23587a7c', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
         throw new Error(`Ошибка сервера: ${response.status}`);
@@ -102,6 +118,8 @@ const Index = () => {
         description: `Не удалось отправить заказ: ${error instanceof Error ? error.message : 'Проверьте соединение'}`,
         variant: 'destructive',
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -174,7 +192,7 @@ const Index = () => {
       
       <PortfolioSection t={t} portfolio={portfolio} />
       
-      <OrderSection t={t} handleFormSubmit={handleFormSubmit} />
+      <OrderSection t={t} handleFormSubmit={handleFormSubmit} isSubmitting={isSubmitting} />
       
       <ContactsSection t={t} />
       
