@@ -81,17 +81,9 @@ const Index = () => {
       const result = await response.json();
       
       if (result.success) {
-        const orderNumberText = typeof t.order.orderNumber !== 'undefined' ? t.order.orderNumber : 'Номер расчета:';
         toast({
           title: '✅ Расчет отправлен!',
-          description: (
-            <div className="space-y-2">
-              <p className="font-semibold text-lg">{orderNumberText}</p>
-              <p className="text-2xl font-bold text-primary">{result.orderNumber}</p>
-              <p className="text-sm mt-3">Подтверждение отправлено на {data.email}</p>
-              <p className="text-xs text-muted-foreground mt-2">{t.order.successTime}</p>
-            </div>
-          ),
+          description: `📋 Номер расчета: ${result.orderNumber}\n\n✉️ Подтверждение отправлено на ${data.email}\n\n⏱️ ${t.order.successTime}`,
           duration: 10000,
         });
         
