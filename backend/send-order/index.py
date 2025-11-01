@@ -81,10 +81,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     </html>
     """
     
-    smtp_server = 'mail.3dprintcustom.ru'
+    smtp_server = os.environ.get('SMTP_SERVER', 'mail.3dprintcustom.ru')
     smtp_port = 587
-    smtp_user = 'zakaz@3dprintcustom.ru'
-    smtp_password = os.environ.get('SMTP_PASSWORD', 'rS9aF7pO6shV3lQ0')
+    smtp_user = os.environ.get('SMTP_USER_SHORT', 'zakaz')
+    smtp_password = os.environ.get('SMTP_PASSWORD', '')
     
     print(f"SMTP Config: server={smtp_server}, port={smtp_port}, user={smtp_user}, password={'SET' if smtp_password else 'NOT SET'}")
     
