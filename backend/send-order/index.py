@@ -86,7 +86,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     smtp_user = os.environ.get('SMTP_USER', '')
     smtp_password = os.environ.get('SMTP_PASSWORD', '')
     
-    print(f"SMTP Config: server={smtp_server}, port={smtp_port}, user={'SET' if smtp_user else 'NOT SET'}, password={'SET' if smtp_password else 'NOT SET'}")
+    print(f"SMTP Config: server={smtp_server}, port={smtp_port}, user={smtp_user}, password={'SET' if smtp_password else 'NOT SET'}")
     
     if not smtp_user or not smtp_password:
         return {
