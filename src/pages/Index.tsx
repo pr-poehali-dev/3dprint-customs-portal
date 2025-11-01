@@ -97,13 +97,14 @@ const Index = () => {
       const result = await response.json();
       
       if (result.success) {
+        const form = e.target as HTMLFormElement;
+        form.reset();
+        
         toast({
           title: '✅ Расчет отправлен!',
           description: `📋 Номер расчета: ${result.orderNumber}\n\n✉️ Подтверждение отправлено на ${data.email}\n\n⏱️ ${t.order.successTime}`,
           duration: 10000,
         });
-        
-        e.currentTarget.reset();
       } else {
         toast({
           title: '❌ Ошибка',
