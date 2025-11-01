@@ -129,7 +129,7 @@ const OrderSection = ({ t, handleFormSubmit, isSubmitting = false }: OrderSectio
               
               <div className="space-y-2">
                 <Label htmlFor="infill">{t.order.infill}</Label>
-                <Input id="infill" name="infill" type="number" min="10" max="100" placeholder="20" required />
+                <Input id="infill" name="infill" type="number" min="10" max="100" defaultValue="15" placeholder="15" required />
               </div>
               
               <div className="space-y-2">
