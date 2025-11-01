@@ -120,14 +120,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     file_base64 = body_data.get('fileBase64', '')
     file_name = body_data.get('fileName', '')
     
+    print(f"📎 File check: fileName='{file_name}', base64_length={len(file_base64) if file_base64 else 0}")
+    
     if file_base64 and file_name:
+        print(f"✅ Attaching file: {file_name}")
         file_data = base64.b64decode(file_base64)
+        print(f"📦 Decoded file size: {len(file_data)} bytes")
         
         part = MIMEBase('application', 'octet-stream')
         part.set_payload(file_data)
         encoders.encode_base64(part)
         part.add_header('Content-Disposition', f'attachment; filename={file_name}')
         msg_company.attach(part)
+    else:
+        print("⚠️ No file attached to this order")
     
     client_email_body = f"""
     <html>
