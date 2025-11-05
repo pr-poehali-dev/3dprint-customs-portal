@@ -191,6 +191,8 @@ export default function AdminPanel() {
     if (!adminToken) return;
 
     try {
+      console.log('Начинаем экспорт данных...');
+      
       const [ordersRes, portfolioRes, clientsRes] = await Promise.all([
         fetch('https://functions.poehali.dev/df2e7780-9527-410f-8848-48ea6e18479d', {
           headers: { 'X-Admin-Token': adminToken }
@@ -203,9 +205,17 @@ export default function AdminPanel() {
         })
       ]);
 
+      console.log('Статусы ответов:', ordersRes.status, portfolioRes.status, clientsRes.status);
+
+      if (!ordersRes.ok || !portfolioRes.ok || !clientsRes.ok) {
+        throw new Error(`Ошибка загрузки данных: Orders(${ordersRes.status}), Portfolio(${portfolioRes.status}), Clients(${clientsRes.status})`);
+      }
+
       const ordersData = await ordersRes.json();
       const portfolioData = await portfolioRes.json();
       const clientsData = await clientsRes.json();
+
+      console.log('Данные загружены:', { ordersData, portfolioData, clientsData });
 
       const exportData = {
         project_info: {
@@ -256,10 +266,11 @@ export default function AdminPanel() {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
+      console.log('Экспорт успешно завершен!');
       alert('✅ Экспорт завершен! Файл содержит все данные о сайте, функциях и базе данных.');
     } catch (err) {
-      console.error('Ошибка экспорта:', err);
-      alert('Ошибка при экспорте данных');
+      console.error('❌ Ошибка экспорта:', err);
+      alert(`❌ Ошибка при экспорте данных:\n${err instanceof Error ? err.message : String(err)}`);
     }
   };
 
