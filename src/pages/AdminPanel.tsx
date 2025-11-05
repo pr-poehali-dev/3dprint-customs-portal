@@ -86,6 +86,7 @@ export default function AdminPanel() {
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [newItem, setNewItem] = useState<Partial<PortfolioItem>>({
     title: '',
     description: '',
@@ -274,6 +275,11 @@ export default function AdminPanel() {
   };
 
   const handleImageUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Пожалуйста, выберите изображение');
+      return;
+    }
+
     setUploadingImage(true);
     try {
       const formData = new FormData();
@@ -295,6 +301,26 @@ export default function AdminPanel() {
       alert('Ошибка загрузки изображения');
     } finally {
       setUploadingImage(false);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleImageUpload(file);
     }
   };
 
@@ -705,7 +731,7 @@ export default function AdminPanel() {
                     id="image_url"
                     value={newItem.image_url}
                     onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value })}
-                    placeholder="https://example.com/image.jpg или загрузите файл"
+                    placeholder="https://example.com/image.jpg"
                     className="flex-1"
                   />
                   <Button
@@ -737,8 +763,15 @@ export default function AdminPanel() {
                     }}
                   />
                 </div>
-                {newItem.image_url && (
-                  <div className="mt-2 border rounded-lg overflow-hidden">
+                <div 
+                  className={`mt-2 border-2 border-dashed rounded-lg overflow-hidden transition-colors ${
+                    isDragging ? 'border-primary bg-primary/5' : 'border-gray-300'
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  {newItem.image_url ? (
                     <img 
                       src={newItem.image_url} 
                       alt="Предпросмотр"
@@ -747,8 +780,14 @@ export default function AdminPanel() {
                         e.currentTarget.src = 'https://placehold.co/600x400?text=Ошибка+загрузки';
                       }}
                     />
-                  </div>
-                )}
+                  ) : (
+                    <div className="h-48 flex flex-col items-center justify-center text-gray-400">
+                      <Icon name="ImagePlus" size={48} className="mb-2" />
+                      <p className="text-sm">Перетащите изображение сюда</p>
+                      <p className="text-xs mt-1">или нажмите кнопку "Загрузить"</p>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
