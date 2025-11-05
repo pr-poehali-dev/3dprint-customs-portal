@@ -19,20 +19,23 @@ interface PortfolioItem {
 const PortfolioSection = ({ t }: PortfolioSectionProps) => {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadPortfolio = async () => {
+    try {
+      setRefreshing(true);
+      const response = await fetch('https://functions.poehali.dev/117013c0-c239-4523-8f93-78203fd39dfb');
+      const data = await response.json();
+      setPortfolioItems(data.portfolio || []);
+    } catch (error) {
+      console.error('Ошибка загрузки портфолио:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
-    const loadPortfolio = async () => {
-      try {
-        const response = await fetch('https://functions.poehali.dev/117013c0-c239-4523-8f93-78203fd39dfb');
-        const data = await response.json();
-        setPortfolioItems(data.portfolio || []);
-      } catch (error) {
-        console.error('Ошибка загрузки портфолио:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadPortfolio();
   }, []);
 
@@ -54,6 +57,24 @@ const PortfolioSection = ({ t }: PortfolioSectionProps) => {
             {t.portfolio.title}
           </h2>
           <p className="text-xl text-gray-600">{t.portfolio.subtitle}</p>
+          <Button 
+            onClick={loadPortfolio} 
+            disabled={refreshing}
+            variant="outline"
+            className="mt-4"
+          >
+            {refreshing ? (
+              <>
+                <Icon name="Loader2" size={16} className="animate-spin mr-2" />
+                Обновление...
+              </>
+            ) : (
+              <>
+                <Icon name="RefreshCw" size={16} className="mr-2" />
+                Обновить
+              </>
+            )}
+          </Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {portfolioItems.map((item) => (
