@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
+import * as XLSX from 'xlsx';
 
 interface Order {
   id: number;
@@ -121,6 +122,43 @@ export default function AdminPanel() {
     } catch (err) {
       console.error('Ошибка обновления статуса:', err);
     }
+  };
+
+  const exportToExcel = (ordersToExport: Order[]) => {
+    const exportData = ordersToExport.map(order => ({
+      'ID заявки': order.id,
+      'Дата создания': new Date(order.created_at).toLocaleString('ru-RU'),
+      'Статус': statusLabels[order.status],
+      'Тип клиента': order.customer_type === 'legal' ? 'Юр. лицо' : 'Физ. лицо',
+      'Компания': order.company_name || '-',
+      'ИНН': order.inn || '-',
+      'Email': order.email,
+      'Телефон': order.phone || '-',
+      'Длина (мм)': order.length || '-',
+      'Ширина (мм)': order.width || '-',
+      'Высота (мм)': order.height || '-',
+      'Материал': order.plastic_type || '-',
+      'Цвет': order.color || '-',
+      'Заполнение (%)': order.infill || '-',
+      'Количество': order.quantity,
+      'Описание': order.description || '-',
+      'Файл': order.file_name || '-'
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Заявки');
+
+    const colWidths = [
+      { wch: 10 }, { wch: 18 }, { wch: 12 }, { wch: 12 },
+      { wch: 20 }, { wch: 12 }, { wch: 25 }, { wch: 15 },
+      { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 12 },
+      { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 40 }, { wch: 20 }
+    ];
+    worksheet['!cols'] = colWidths;
+
+    const fileName = `Заявки_3DPrint_${new Date().toLocaleDateString('ru-RU').replace(/\./g, '-')}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
   };
 
   useEffect(() => {
@@ -255,6 +293,14 @@ export default function AdminPanel() {
                   <h2 className="text-xl font-semibold">
                     Найдено заявок: {filteredOrders.length} из {orders.length}
                   </h2>
+                  <Button 
+                    onClick={() => exportToExcel(filteredOrders)}
+                    variant="default"
+                    disabled={filteredOrders.length === 0}
+                  >
+                    <Icon name="Download" size={18} className="mr-2" />
+                    Экспорт в Excel
+                  </Button>
                 </div>
 
                 {filteredOrders.length === 0 ? (
