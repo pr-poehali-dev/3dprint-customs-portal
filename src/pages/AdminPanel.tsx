@@ -85,6 +85,7 @@ export default function AdminPanel() {
   const [portfolioLoading, setPortfolioLoading] = useState(false);
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [newItem, setNewItem] = useState<Partial<PortfolioItem>>({
     title: '',
     description: '',
@@ -269,6 +270,31 @@ export default function AdminPanel() {
       }
     } catch (err) {
       console.error('Ошибка удаления:', err);
+    }
+  };
+
+  const handleImageUpload = async (file: File) => {
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('https://functions.poehali.dev/b08b5e90-3265-4ae3-8494-e33f8fdd77c8', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setNewItem({ ...newItem, image_url: data.url });
+      } else {
+        alert('Ошибка загрузки изображения');
+      }
+    } catch (err) {
+      console.error('Ошибка загрузки:', err);
+      alert('Ошибка загрузки изображения');
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -673,13 +699,44 @@ export default function AdminPanel() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="image_url">URL изображения</Label>
-                <Input
-                  id="image_url"
-                  value={newItem.image_url}
-                  onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value })}
-                  placeholder="https://example.com/image.jpg"
-                />
+                <Label htmlFor="image_url">Изображение</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="image_url"
+                    value={newItem.image_url}
+                    onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value })}
+                    placeholder="https://example.com/image.jpg или загрузите файл"
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={uploadingImage}
+                    onClick={() => document.getElementById('file-upload')?.click()}
+                  >
+                    {uploadingImage ? (
+                      <>
+                        <Icon name="Loader2" size={18} className="animate-spin mr-2" />
+                        Загрузка...
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="Upload" size={18} className="mr-2" />
+                        Загрузить
+                      </>
+                    )}
+                  </Button>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(file);
+                    }}
+                  />
+                </div>
                 {newItem.image_url && (
                   <div className="mt-2 border rounded-lg overflow-hidden">
                     <img 
