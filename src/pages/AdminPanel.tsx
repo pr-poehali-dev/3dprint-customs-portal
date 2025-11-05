@@ -1,60 +1,40 @@
 import { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
-import * as XLSX from 'xlsx';
-import { Order, PortfolioItem, ClientItem, statusLabels } from '@/components/admin/types';
 import OrdersList from '@/components/admin/OrdersList';
 import PortfolioManagement from '@/components/admin/PortfolioManagement';
 import PortfolioDialog from '@/components/admin/PortfolioDialog';
 import ClientsManagement from '@/components/admin/ClientsManagement';
 import ClientDialog from '@/components/admin/ClientDialog';
+import AdminLoginForm from '@/components/admin/AdminLoginForm';
+import { useOrdersManager } from '@/components/admin/useOrdersManager';
+import { usePortfolioManager } from '@/components/admin/usePortfolioManager';
+import { useClientsManager } from '@/components/admin/useClientsManager';
+import { useExportImport } from '@/components/admin/useExportImport';
 
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState('');
   const [activeTab, setActiveTab] = useState('orders');
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
-  const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [searchEmail, setSearchEmail] = useState('');
-  
-  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
-  const [portfolioLoading, setPortfolioLoading] = useState(false);
-  const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [newItem, setNewItem] = useState<Partial<PortfolioItem>>({
-    title: '',
-    description: '',
-    image_url: '',
-    display_order: 0,
-    is_visible: true
-  });
 
-  const [clients, setClients] = useState<ClientItem[]>([]);
-  const [clientsLoading, setClientsLoading] = useState(false);
-  const [editingClient, setEditingClient] = useState<ClientItem | null>(null);
-  const [isClientDialogOpen, setIsClientDialogOpen] = useState(false);
-  const [newClient, setNewClient] = useState<Partial<ClientItem>>({
-    name: '',
-    logo_url: '',
-    display_order: 0,
-    is_visible: true
-  });
-  const [importing, setImporting] = useState(false);
+  const ordersManager = useOrdersManager();
+  const portfolioManager = usePortfolioManager();
+  const clientsManager = useClientsManager();
+  const exportImportManager = useExportImport(
+    portfolioManager.loadPortfolio,
+    clientsManager.loadClients
+  );
 
-  const login = () => {
+  const login = async () => {
     if (token.trim()) {
       localStorage.setItem('admin_token', token);
-      setIsAuthenticated(true);
-      loadOrders(token);
+      const success = await ordersManager.loadOrders(token);
+      if (success) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
     }
   };
 
@@ -62,544 +42,17 @@ export default function AdminPanel() {
     localStorage.removeItem('admin_token');
     setIsAuthenticated(false);
     setToken('');
-    setOrders([]);
-  };
-
-  const loadOrders = async (adminToken: string) => {
-    setLoading(true);
-    setError('');
-    
-    try {
-      const response = await fetch('https://functions.poehali.dev/df2e7780-9527-410f-8848-48ea6e18479d', {
-        method: 'GET',
-        headers: {
-          'X-Admin-Token': adminToken
-        }
-      });
-
-      if (response.status === 401) {
-        setError('Неверный токен доступа. Проверьте правильность введённого токена.');
-        setIsAuthenticated(false);
-        return;
-      }
-
-      if (!response.ok) {
-        setError(`Ошибка сервера: ${response.status}`);
-        setIsAuthenticated(false);
-        return;
-      }
-
-      const data = await response.json();
-      setOrders(data.orders || []);
-    } catch (err) {
-      setError('Ошибка загрузки заявок. Проверьте подключение к интернету.');
-      console.error('Orders fetch error:', err);
-      setIsAuthenticated(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateOrderStatus = async (orderId: number, newStatus: string) => {
-    const adminToken = localStorage.getItem('admin_token');
-    if (!adminToken) return;
-
-    try {
-      const response = await fetch('https://functions.poehali.dev/1b30405e-8c9f-44e4-b6c7-6a8d3df8a2e8', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Admin-Token': adminToken
-        },
-        body: JSON.stringify({ order_id: orderId, status: newStatus })
-      });
-
-      if (response.ok) {
-        loadOrders(adminToken);
-      }
-    } catch (err) {
-      console.error('Ошибка обновления статуса:', err);
-    }
-  };
-
-  const deleteOrder = async (orderId: number) => {
-    const adminToken = localStorage.getItem('admin_token');
-    if (!adminToken) return;
-
-    if (!confirm('Вы уверены, что хотите удалить эту заявку? Это действие нельзя отменить.')) return;
-
-    try {
-      const response = await fetch('https://functions.poehali.dev/df2e7780-9527-410f-8848-48ea6e18479d', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Admin-Token': adminToken
-        },
-        body: JSON.stringify({ order_id: orderId })
-      });
-
-      if (response.ok) {
-        loadOrders(adminToken);
-      } else {
-        alert('Ошибка при удалении заявки');
-      }
-    } catch (err) {
-      console.error('Ошибка удаления заявки:', err);
-      alert('Ошибка при удалении заявки');
-    }
-  };
-
-  const exportToExcel = (ordersToExport: Order[]) => {
-    const exportData = ordersToExport.map(order => ({
-      'ID заявки': order.id,
-      'Дата создания': new Date(order.created_at).toLocaleString('ru-RU'),
-      'Статус': statusLabels[order.status],
-      'Тип клиента': order.customer_type === 'legal' ? 'Юр. лицо' : 'Физ. лицо',
-      'Компания': order.company_name || '-',
-      'ИНН': order.inn || '-',
-      'Email': order.email,
-      'Телефон': order.phone || '-',
-      'Длина (мм)': order.length || '-',
-      'Ширина (мм)': order.width || '-',
-      'Высота (мм)': order.height || '-',
-      'Материал': order.plastic_type || '-',
-      'Цвет': order.color || '-',
-      'Заполнение (%)': order.infill || '-',
-      'Количество': order.quantity,
-      'Описание': order.description || '-',
-      'Файл': order.file_name || '-'
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Заявки');
-
-    const colWidths = [
-      { wch: 10 }, { wch: 18 }, { wch: 12 }, { wch: 12 },
-      { wch: 20 }, { wch: 12 }, { wch: 25 }, { wch: 15 },
-      { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 12 },
-      { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 40 }, { wch: 20 }
-    ];
-    worksheet['!cols'] = colWidths;
-
-    const fileName = `Заявки_3DPrint_${new Date().toLocaleDateString('ru-RU').replace(/\./g, '-')}.xlsx`;
-    XLSX.writeFile(workbook, fileName);
-  };
-
-  const exportCompleteSite = async () => {
-    const adminToken = localStorage.getItem('admin_token');
-    if (!adminToken) return;
-
-    try {
-      console.log('Начинаем экспорт данных...');
-      
-      let ordersData = { orders: [] };
-      let portfolioData = { portfolio: [] };
-      let clientsData = { clients: [] };
-
-      try {
-        console.log('Загрузка заявок...');
-        const ordersRes = await fetch('https://functions.poehali.dev/df2e7780-9527-410f-8848-48ea6e18479d', {
-          method: 'GET',
-          headers: { 
-            'X-Admin-Token': adminToken,
-            'Content-Type': 'application/json'
-          }
-        });
-        if (ordersRes.ok) {
-          ordersData = await ordersRes.json();
-          console.log('Заявки загружены:', ordersData);
-        } else {
-          console.warn('Не удалось загрузить заявки:', ordersRes.status);
-        }
-      } catch (err) {
-        console.warn('Ошибка загрузки заявок:', err);
-      }
-
-      try {
-        console.log('Загрузка портфолио...');
-        const portfolioRes = await fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', {
-          method: 'GET',
-          headers: { 
-            'X-Admin-Token': adminToken,
-            'Content-Type': 'application/json'
-          }
-        });
-        if (portfolioRes.ok) {
-          portfolioData = await portfolioRes.json();
-          console.log('Портфолио загружено:', portfolioData);
-        } else {
-          console.warn('Не удалось загрузить портфолио:', portfolioRes.status);
-        }
-      } catch (err) {
-        console.warn('Ошибка загрузки портфолио:', err);
-      }
-
-      try {
-        console.log('Загрузка клиентов...');
-        const clientsRes = await fetch('https://functions.poehali.dev/e9de2896-8e7d-4fc8-aaa0-e00876a2f5b1', {
-          method: 'GET',
-          headers: { 
-            'X-Admin-Token': adminToken,
-            'Content-Type': 'application/json'
-          }
-        });
-        if (clientsRes.ok) {
-          clientsData = await clientsRes.json();
-          console.log('Клиенты загружены:', clientsData);
-        } else {
-          console.warn('Не удалось загрузить клиентов:', clientsRes.status);
-        }
-      } catch (err) {
-        console.warn('Ошибка загрузки клиентов:', err);
-      }
-
-      console.log('Все данные загружены, создаём экспорт...');
-
-      const exportData = {
-        project_info: {
-          name: '3D Print Service',
-          export_date: new Date().toISOString(),
-          platform: 'poehali.dev',
-          domain: window.location.hostname
-        },
-        tech_stack: {
-          frontend: 'React + TypeScript + Vite + Tailwind CSS',
-          backend: 'Python 3.11 Cloud Functions',
-          database: 'PostgreSQL',
-          ui_library: 'shadcn/ui'
-        },
-        backend_functions: [
-          { name: 'orders-get', url: 'https://functions.poehali.dev/df2e7780-9527-410f-8848-48ea6e18479d', description: 'Управление заявками' },
-          { name: 'send-order', url: 'https://functions.poehali.dev/4e39cc6e-4dca-4b45-9636-bf45d5c74b3f', description: 'Создание новой заявки' },
-          { name: 'order-update-status', url: 'https://functions.poehali.dev/1b30405e-8c9f-44e4-b6c7-6a8d3df8a2e8', description: 'Обновление статуса заявки' },
-          { name: 'portfolio-admin', url: 'https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', description: 'Управление портфолио' },
-          { name: 'clients-get', url: 'https://functions.poehali.dev/e9de2896-8e7d-4fc8-aaa0-e00876a2f5b1', description: 'Управление клиентами' }
-        ],
-        database: {
-          orders: ordersData.orders || [],
-          portfolio: portfolioData.portfolio || [],
-          clients: clientsData.clients || []
-        },
-        secrets: {
-          note: 'Значения секретов не экспортируются по соображениям безопасности. Указаны только названия.',
-          required: [
-            'DATABASE_URL - строка подключения к PostgreSQL',
-            'ADMIN_TOKEN - токен доступа к админ-панели'
-          ]
-        },
-        instructions: {
-          deployment: 'Проект развернут на платформе poehali.dev',
-          github_integration: 'Для получения исходного кода подключите GitHub через кнопку "Скачать → Подключить GitHub"',
-          build_download: 'Для скачивания статической версии сайта используйте "Скачать → Скачать билд"'
-        }
-      };
-
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `3DPrint_Complete_Export_${new Date().toLocaleDateString('ru-RU').replace(/\./g, '-')}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      console.log('Экспорт успешно завершен!');
-      alert('✅ Экспорт завершен! Файл содержит все данные о сайте, функциях и базе данных.');
-    } catch (err) {
-      console.error('❌ Ошибка экспорта:', err);
-      alert(`❌ Ошибка при экспорте данных:\n${err instanceof Error ? err.message : String(err)}`);
-    }
-  };
-
-  const importCompleteSite = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const adminToken = localStorage.getItem('admin_token');
-    if (!adminToken) return;
-
-    setImporting(true);
-
-    try {
-      const text = await file.text();
-      const importData = JSON.parse(text);
-
-      if (!importData.database) {
-        alert('❌ Неверный формат файла');
-        return;
-      }
-
-      const portfolioItems = importData.database.portfolio || [];
-      const clientItems = importData.database.clients || [];
-
-      let successCount = 0;
-      let errorCount = 0;
-
-      for (const item of portfolioItems) {
-        try {
-          const { id, ...itemData } = item;
-          await fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Admin-Token': adminToken
-            },
-            body: JSON.stringify(itemData)
-          });
-          successCount++;
-        } catch (err) {
-          console.error('Ошибка импорта портфолио:', err);
-          errorCount++;
-        }
-      }
-
-      for (const item of clientItems) {
-        try {
-          const { id, ...itemData } = item;
-          await fetch('https://functions.poehali.dev/e9de2896-8e7d-4fc8-aaa0-e00876a2f5b1', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Admin-Token': adminToken
-            },
-            body: JSON.stringify(itemData)
-          });
-          successCount++;
-        } catch (err) {
-          console.error('Ошибка импорта клиентов:', err);
-          errorCount++;
-        }
-      }
-
-      loadPortfolio(adminToken);
-      loadClients(adminToken);
-
-      if (errorCount === 0) {
-        alert(`✅ Импорт завершен! Импортировано элементов: ${successCount}`);
-      } else {
-        alert(`⚠️ Импорт завершен с ошибками.\nУспешно: ${successCount}\nОшибок: ${errorCount}`);
-      }
-
-      event.target.value = '';
-    } catch (err) {
-      console.error('Ошибка импорта:', err);
-      alert('❌ Ошибка при импорте данных. Проверьте формат файла.');
-    } finally {
-      setImporting(false);
-    }
-  };
-
-  const loadPortfolio = async (adminToken: string) => {
-    setPortfolioLoading(true);
-    try {
-      const response = await fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', {
-        method: 'GET',
-        headers: {
-          'X-Admin-Token': adminToken
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setPortfolio(data.portfolio || []);
-      }
-    } catch (err) {
-      console.error('Ошибка загрузки портфолио:', err);
-    } finally {
-      setPortfolioLoading(false);
-    }
-  };
-
-  const savePortfolioItem = async (item: Partial<PortfolioItem>) => {
-    const adminToken = localStorage.getItem('admin_token');
-    if (!adminToken) return;
-
-    try {
-      const method = item.id ? 'PUT' : 'POST';
-      const response = await fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Admin-Token': adminToken
-        },
-        body: JSON.stringify(item)
-      });
-
-      if (response.ok) {
-        loadPortfolio(adminToken);
-        setIsDialogOpen(false);
-        setEditingItem(null);
-        setNewItem({
-          title: '',
-          description: '',
-          image_url: '',
-          display_order: 0,
-          is_visible: true
-        });
-      }
-    } catch (err) {
-      console.error('Ошибка сохранения:', err);
-    }
-  };
-
-  const deletePortfolioItem = async (id: number) => {
-    const adminToken = localStorage.getItem('admin_token');
-    if (!adminToken) return;
-
-    if (!confirm('Удалить эту работу из портфолио?')) return;
-
-    try {
-      const response = await fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Admin-Token': adminToken
-        },
-        body: JSON.stringify({ id })
-      });
-
-      if (response.ok) {
-        loadPortfolio(adminToken);
-      }
-    } catch (err) {
-      console.error('Ошибка удаления:', err);
-    }
-  };
-
-  const handleImageUpload = async (file: File) => {
-    if (!file.type.startsWith('image/')) {
-      alert('Пожалуйста, выберите изображение');
-      return;
-    }
-
-    setUploadingImage(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('https://functions.poehali.dev/b08b5e90-3265-4ae3-8494-e33f8fdd77c8', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setNewItem({ ...newItem, image_url: data.url });
-      } else {
-        alert('Ошибка загрузки изображения');
-      }
-    } catch (err) {
-      console.error('Ошибка загрузки:', err);
-      alert('Ошибка загрузки изображения');
-    } finally {
-      setUploadingImage(false);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      handleImageUpload(file);
-    }
-  };
-
-  const loadClients = async (adminToken: string) => {
-    setClientsLoading(true);
-    try {
-      const response = await fetch('https://functions.poehali.dev/d584ff33-449c-4abe-8a4e-13cfe9b42ddc', {
-        method: 'GET',
-        headers: {
-          'X-Admin-Token': adminToken
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setClients(data.clients || []);
-      }
-    } catch (err) {
-      console.error('Ошибка загрузки клиентов:', err);
-    } finally {
-      setClientsLoading(false);
-    }
-  };
-
-  const saveClient = async (item: Partial<ClientItem>) => {
-    const adminToken = localStorage.getItem('admin_token');
-    if (!adminToken) return;
-
-    try {
-      const method = item.id ? 'PUT' : 'POST';
-      const response = await fetch('https://functions.poehali.dev/d584ff33-449c-4abe-8a4e-13cfe9b42ddc', {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Admin-Token': adminToken
-        },
-        body: JSON.stringify(item)
-      });
-
-      if (response.ok) {
-        loadClients(adminToken);
-        setIsClientDialogOpen(false);
-        setEditingClient(null);
-        setNewClient({
-          name: '',
-          logo_url: '',
-          display_order: 0,
-          is_visible: true
-        });
-      }
-    } catch (err) {
-      console.error('Ошибка сохранения:', err);
-    }
-  };
-
-  const deleteClient = async (id: number) => {
-    const adminToken = localStorage.getItem('admin_token');
-    if (!adminToken) return;
-
-    if (!confirm('Удалить этого клиента?')) return;
-
-    try {
-      const response = await fetch('https://functions.poehali.dev/d584ff33-449c-4abe-8a4e-13cfe9b42ddc', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Admin-Token': adminToken
-        },
-        body: JSON.stringify({ id })
-      });
-
-      if (response.ok) {
-        loadClients(adminToken);
-      }
-    } catch (err) {
-      console.error('Ошибка удаления:', err);
-    }
   };
 
   useEffect(() => {
     const savedToken = localStorage.getItem('admin_token');
     if (savedToken) {
       setToken(savedToken);
-      setIsAuthenticated(true);
-      loadOrders(savedToken);
+      ordersManager.loadOrders(savedToken).then(success => {
+        if (success) {
+          setIsAuthenticated(true);
+        }
+      });
     }
   }, []);
 
@@ -607,57 +60,26 @@ export default function AdminPanel() {
     if (isAuthenticated && activeTab === 'portfolio') {
       const adminToken = localStorage.getItem('admin_token');
       if (adminToken) {
-        loadPortfolio(adminToken);
+        portfolioManager.loadPortfolio(adminToken);
       }
     }
     if (isAuthenticated && activeTab === 'clients') {
       const adminToken = localStorage.getItem('admin_token');
       if (adminToken) {
-        loadClients(adminToken);
+        clientsManager.loadClients(adminToken);
       }
     }
   }, [isAuthenticated, activeTab]);
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">Админ-панель</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="token">Токен доступа</Label>
-              <Input
-                id="token"
-                type="password"
-                placeholder="Введите токен администратора"
-                value={token}
-                onChange={(e) => setToken(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && login()}
-              />
-            </div>
-            {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-600 flex items-center gap-2">
-                  <Icon name="AlertCircle" size={16} />
-                  {error}
-                </p>
-              </div>
-            )}
-            <Button onClick={login} className="w-full" disabled={loading}>
-              {loading ? (
-                <>
-                  <Icon name="Loader2" size={18} className="animate-spin mr-2" />
-                  Проверка токена...
-                </>
-              ) : (
-                'Войти'
-              )}
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <AdminLoginForm
+        token={token}
+        setToken={setToken}
+        error={ordersManager.error}
+        loading={ordersManager.loading}
+        onLogin={login}
+      />
     );
   }
 
@@ -667,19 +89,27 @@ export default function AdminPanel() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Панель администратора</h1>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={exportCompleteSite}>
+            <Button variant="outline" onClick={exportImportManager.exportCompleteSite}>
               <Icon name="Download" size={18} className="mr-2" />
               Скачать сайт
             </Button>
-            <Button variant="outline" onClick={() => document.getElementById('import-file')?.click()} disabled={importing}>
-              <Icon name={importing ? "Loader2" : "Upload"} size={18} className={`mr-2 ${importing ? 'animate-spin' : ''}`} />
-              {importing ? 'Импорт...' : 'Загрузить сайт'}
+            <Button 
+              variant="outline" 
+              onClick={() => document.getElementById('import-file')?.click()} 
+              disabled={exportImportManager.importing}
+            >
+              <Icon 
+                name={exportImportManager.importing ? "Loader2" : "Upload"} 
+                size={18} 
+                className={`mr-2 ${exportImportManager.importing ? 'animate-spin' : ''}`} 
+              />
+              {exportImportManager.importing ? 'Импорт...' : 'Загрузить сайт'}
             </Button>
             <input
               id="import-file"
               type="file"
               accept=".json"
-              onChange={importCompleteSite}
+              onChange={exportImportManager.importCompleteSite}
               className="hidden"
             />
             <Button variant="outline" onClick={logout}>
@@ -707,74 +137,93 @@ export default function AdminPanel() {
 
           <TabsContent value="orders">
             <OrdersList
-              orders={orders}
-              loading={loading}
-              expandedOrder={expandedOrder}
-              setExpandedOrder={setExpandedOrder}
-              updateOrderStatus={updateOrderStatus}
-              deleteOrder={deleteOrder}
-              exportToExcel={exportToExcel}
-              filterStatus={filterStatus}
-              setFilterStatus={setFilterStatus}
-              searchEmail={searchEmail}
-              setSearchEmail={setSearchEmail}
+              orders={ordersManager.orders}
+              loading={ordersManager.loading}
+              expandedOrder={ordersManager.expandedOrder}
+              setExpandedOrder={ordersManager.setExpandedOrder}
+              updateOrderStatus={ordersManager.updateOrderStatus}
+              deleteOrder={ordersManager.deleteOrder}
+              exportToExcel={exportImportManager.exportToExcel}
+              filterStatus={ordersManager.filterStatus}
+              setFilterStatus={ordersManager.setFilterStatus}
+              searchEmail={ordersManager.searchEmail}
+              setSearchEmail={ordersManager.setSearchEmail}
             />
           </TabsContent>
 
-          <TabsContent value="portfolio" className="space-y-6">
+          <TabsContent value="portfolio">
             <PortfolioManagement
-              portfolio={portfolio}
-              portfolioLoading={portfolioLoading}
-              loadPortfolio={loadPortfolio}
-              setEditingItem={setEditingItem}
-              setIsDialogOpen={setIsDialogOpen}
-              deletePortfolioItem={deletePortfolioItem}
-              setNewItem={setNewItem}
+              portfolio={portfolioManager.portfolio}
+              loading={portfolioManager.portfolioLoading}
+              onEdit={(item) => {
+                portfolioManager.setEditingItem(item);
+                portfolioManager.setNewItem(item);
+                portfolioManager.setIsDialogOpen(true);
+              }}
+              onDelete={portfolioManager.deletePortfolioItem}
+              onAddNew={() => {
+                portfolioManager.setEditingItem(null);
+                portfolioManager.setNewItem({
+                  title: '',
+                  description: '',
+                  image_url: '',
+                  display_order: portfolioManager.portfolio.length + 1,
+                  is_visible: true
+                });
+                portfolioManager.setIsDialogOpen(true);
+              }}
+            />
+            <PortfolioDialog
+              isOpen={portfolioManager.isDialogOpen}
+              onClose={() => {
+                portfolioManager.setIsDialogOpen(false);
+                portfolioManager.setEditingItem(null);
+              }}
+              item={portfolioManager.newItem}
+              setItem={portfolioManager.setNewItem}
+              onSave={() => portfolioManager.savePortfolioItem(portfolioManager.newItem)}
+              uploadingImage={portfolioManager.uploadingImage}
+              isDragging={portfolioManager.isDragging}
+              onImageUpload={portfolioManager.handleImageUpload}
+              onDragOver={portfolioManager.handleDragOver}
+              onDragLeave={portfolioManager.handleDragLeave}
+              onDrop={portfolioManager.handleDrop}
             />
           </TabsContent>
 
-          <TabsContent value="clients" className="space-y-6">
+          <TabsContent value="clients">
             <ClientsManagement
-              clients={clients}
-              clientsLoading={clientsLoading}
-              loadClients={loadClients}
-              setEditingClient={setEditingClient}
-              setIsDialogOpen={setIsClientDialogOpen}
-              deleteClient={deleteClient}
-              setNewClient={setNewClient}
+              clients={clientsManager.clients}
+              loading={clientsManager.clientsLoading}
+              onEdit={(client) => {
+                clientsManager.setEditingClient(client);
+                clientsManager.setNewClient(client);
+                clientsManager.setIsClientDialogOpen(true);
+              }}
+              onDelete={clientsManager.deleteClient}
+              onAddNew={() => {
+                clientsManager.setEditingClient(null);
+                clientsManager.setNewClient({
+                  name: '',
+                  logo_url: '',
+                  display_order: clientsManager.clients.length + 1,
+                  is_visible: true
+                });
+                clientsManager.setIsClientDialogOpen(true);
+              }}
+            />
+            <ClientDialog
+              isOpen={clientsManager.isClientDialogOpen}
+              onClose={() => {
+                clientsManager.setIsClientDialogOpen(false);
+                clientsManager.setEditingClient(null);
+              }}
+              client={clientsManager.newClient}
+              setClient={clientsManager.setNewClient}
+              onSave={() => clientsManager.saveClient(clientsManager.newClient)}
             />
           </TabsContent>
         </Tabs>
-
-        <PortfolioDialog
-          isDialogOpen={isDialogOpen}
-          setIsDialogOpen={setIsDialogOpen}
-          editingItem={editingItem}
-          newItem={newItem}
-          setNewItem={setNewItem}
-          savePortfolioItem={savePortfolioItem}
-          uploadingImage={uploadingImage}
-          isDragging={isDragging}
-          handleImageUpload={handleImageUpload}
-          handleDragOver={handleDragOver}
-          handleDragLeave={handleDragLeave}
-          handleDrop={handleDrop}
-        />
-
-        <ClientDialog
-          isDialogOpen={isClientDialogOpen}
-          setIsDialogOpen={setIsClientDialogOpen}
-          editingClient={editingClient}
-          newClient={newClient}
-          setNewClient={setNewClient}
-          saveClient={saveClient}
-          uploadingImage={uploadingImage}
-          isDragging={isDragging}
-          handleImageUpload={handleImageUpload}
-          handleDragOver={handleDragOver}
-          handleDragLeave={handleDragLeave}
-          handleDrop={handleDrop}
-        />
       </div>
     </div>
   );
