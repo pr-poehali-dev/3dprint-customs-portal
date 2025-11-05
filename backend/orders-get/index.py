@@ -36,15 +36,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     headers = event.get('headers', {})
     admin_token = headers.get('x-admin-token') or headers.get('X-Admin-Token')
+    expected_token = os.environ.get('ADMIN_TOKEN', 'default-secret-token')
     
-    if not admin_token or admin_token != os.environ.get('ADMIN_TOKEN', 'default-secret-token'):
+    print(f"Received token: {admin_token[:10] if admin_token else 'None'}...")
+    print(f"Expected token: {expected_token[:10]}...")
+    print(f"Tokens match: {admin_token == expected_token}")
+    
+    if not admin_token or admin_token != expected_token:
         return {
             'statusCode': 401,
             'headers': {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            'body': json.dumps({'error': 'Unauthorized'})
+            'body': json.dumps({'error': 'Unauthorized', 'debug': f'Token received: {bool(admin_token)}'})
         }
     
     dsn = os.environ.get('DATABASE_URL')
