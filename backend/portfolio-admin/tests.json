@@ -10,12 +10,12 @@
       }
     },
     {
-      "name": "Get portfolio without token",
+      "name": "Get public portfolio without token",
       "method": "GET",
       "path": "/",
-      "expectedStatus": 401,
+      "expectedStatus": 200,
       "expectedBody": {
-        "error": "Unauthorized"
+        "portfolio": "array"
       },
       "bodyMatcher": "partial"
     }
