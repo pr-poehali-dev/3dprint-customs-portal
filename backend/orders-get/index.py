@@ -2,6 +2,7 @@ import json
 import os
 import psycopg2
 from typing import Dict, Any
+from decimal import Decimal
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -71,6 +72,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             order_dict['created_at'] = order_dict['created_at'].isoformat()
         if order_dict.get('updated_at'):
             order_dict['updated_at'] = order_dict['updated_at'].isoformat()
+        
+        for key, value in order_dict.items():
+            if isinstance(value, Decimal):
+                order_dict[key] = float(value)
+        
         orders.append(order_dict)
     
     cursor.close()
