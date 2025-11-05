@@ -193,29 +193,68 @@ export default function AdminPanel() {
     try {
       console.log('Начинаем экспорт данных...');
       
-      const [ordersRes, portfolioRes, clientsRes] = await Promise.all([
-        fetch('https://functions.poehali.dev/df2e7780-9527-410f-8848-48ea6e18479d', {
-          headers: { 'X-Admin-Token': adminToken }
-        }),
-        fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', {
-          headers: { 'X-Admin-Token': adminToken }
-        }),
-        fetch('https://functions.poehali.dev/e9de2896-8e7d-4fc8-aaa0-e00876a2f5b1', {
-          headers: { 'X-Admin-Token': adminToken }
-        })
-      ]);
+      let ordersData = { orders: [] };
+      let portfolioData = { portfolio: [] };
+      let clientsData = { clients: [] };
 
-      console.log('Статусы ответов:', ordersRes.status, portfolioRes.status, clientsRes.status);
-
-      if (!ordersRes.ok || !portfolioRes.ok || !clientsRes.ok) {
-        throw new Error(`Ошибка загрузки данных: Orders(${ordersRes.status}), Portfolio(${portfolioRes.status}), Clients(${clientsRes.status})`);
+      try {
+        console.log('Загрузка заявок...');
+        const ordersRes = await fetch('https://functions.poehali.dev/df2e7780-9527-410f-8848-48ea6e18479d', {
+          method: 'GET',
+          headers: { 
+            'X-Admin-Token': adminToken,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (ordersRes.ok) {
+          ordersData = await ordersRes.json();
+          console.log('Заявки загружены:', ordersData);
+        } else {
+          console.warn('Не удалось загрузить заявки:', ordersRes.status);
+        }
+      } catch (err) {
+        console.warn('Ошибка загрузки заявок:', err);
       }
 
-      const ordersData = await ordersRes.json();
-      const portfolioData = await portfolioRes.json();
-      const clientsData = await clientsRes.json();
+      try {
+        console.log('Загрузка портфолио...');
+        const portfolioRes = await fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', {
+          method: 'GET',
+          headers: { 
+            'X-Admin-Token': adminToken,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (portfolioRes.ok) {
+          portfolioData = await portfolioRes.json();
+          console.log('Портфолио загружено:', portfolioData);
+        } else {
+          console.warn('Не удалось загрузить портфолио:', portfolioRes.status);
+        }
+      } catch (err) {
+        console.warn('Ошибка загрузки портфолио:', err);
+      }
 
-      console.log('Данные загружены:', { ordersData, portfolioData, clientsData });
+      try {
+        console.log('Загрузка клиентов...');
+        const clientsRes = await fetch('https://functions.poehali.dev/e9de2896-8e7d-4fc8-aaa0-e00876a2f5b1', {
+          method: 'GET',
+          headers: { 
+            'X-Admin-Token': adminToken,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (clientsRes.ok) {
+          clientsData = await clientsRes.json();
+          console.log('Клиенты загружены:', clientsData);
+        } else {
+          console.warn('Не удалось загрузить клиентов:', clientsRes.status);
+        }
+      } catch (err) {
+        console.warn('Ошибка загрузки клиентов:', err);
+      }
+
+      console.log('Все данные загружены, создаём экспорт...');
 
       const exportData = {
         project_info: {
