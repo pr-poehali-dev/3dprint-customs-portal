@@ -22,7 +22,7 @@ const PortfolioSection = ({ t }: PortfolioSectionProps) => {
 
   const loadPortfolio = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/117013c0-c239-4523-8f93-78203fd39dfb');
+      const response = await fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b');
       const data = await response.json();
       setPortfolioItems(data.portfolio || []);
     } catch (error) {

@@ -26,8 +26,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     headers = event.get('headers', {})
     admin_token = headers.get('x-admin-token') or headers.get('X-Admin-Token')
+    is_admin = admin_token == 'a8f3K9mP2xR7qL5nB4vC6wE1sH0jT3yU8zG2d'
     
-    if not admin_token or admin_token != 'a8f3K9mP2xR7qL5nB4vC6wE1sH0jT3yU8zG2d':
+    # Для всех методов кроме GET требуется админ токен
+    if method != 'GET' and not is_admin:
         return {
             'statusCode': 401,
             'headers': {
@@ -42,21 +44,32 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cursor = conn.cursor()
     
     if method == 'GET':
-        cursor.execute('''
-            SELECT id, title, description, image_url, display_order, is_visible, created_at, updated_at
-            FROM portfolio
-            ORDER BY display_order ASC, created_at DESC
-        ''')
+        # Если админ - показываем все, иначе только видимые
+        if is_admin:
+            cursor.execute('''
+                SELECT id, title, description, image_url, display_order, is_visible, created_at, updated_at
+                FROM portfolio
+                ORDER BY display_order ASC, created_at DESC
+            ''')
+        else:
+            cursor.execute('''
+                SELECT id, title, description, image_url, display_order, is_visible
+                FROM portfolio
+                WHERE is_visible = true
+                ORDER BY display_order ASC
+            ''')
         
         columns = [desc[0] for desc in cursor.description]
         portfolio = []
         
         for row in cursor.fetchall():
             item_dict = dict(zip(columns, row))
-            if item_dict.get('created_at'):
-                item_dict['created_at'] = item_dict['created_at'].isoformat()
-            if item_dict.get('updated_at'):
-                item_dict['updated_at'] = item_dict['updated_at'].isoformat()
+            # Форматируем даты только для админа (у публичного запроса их нет)
+            if is_admin:
+                if item_dict.get('created_at'):
+                    item_dict['created_at'] = item_dict['created_at'].isoformat()
+                if item_dict.get('updated_at'):
+                    item_dict['updated_at'] = item_dict['updated_at'].isoformat()
             portfolio.append(item_dict)
         
         cursor.close()
