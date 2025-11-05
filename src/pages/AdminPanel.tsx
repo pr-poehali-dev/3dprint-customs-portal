@@ -64,16 +64,23 @@ export default function AdminPanel() {
       });
 
       if (response.status === 401) {
-        setError('Неверный токен доступа');
-        logout();
+        setError('Неверный токен доступа. Проверьте правильность введённого токена.');
+        setIsAuthenticated(false);
+        return;
+      }
+
+      if (!response.ok) {
+        setError(`Ошибка сервера: ${response.status}`);
+        setIsAuthenticated(false);
         return;
       }
 
       const data = await response.json();
       setOrders(data.orders || []);
     } catch (err) {
-      setError('Ошибка загрузки заявок');
-      console.error(err);
+      setError('Ошибка загрузки заявок. Проверьте подключение к интернету.');
+      console.error('Orders fetch error:', err);
+      setIsAuthenticated(false);
     } finally {
       setLoading(false);
     }
@@ -303,10 +310,22 @@ export default function AdminPanel() {
               />
             </div>
             {error && (
-              <p className="text-sm text-red-500">{error}</p>
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600 flex items-center gap-2">
+                  <Icon name="AlertCircle" size={16} />
+                  {error}
+                </p>
+              </div>
             )}
-            <Button onClick={login} className="w-full">
-              Войти
+            <Button onClick={login} className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Icon name="Loader2" size={18} className="animate-spin mr-2" />
+                  Проверка токена...
+                </>
+              ) : (
+                'Войти'
+              )}
             </Button>
           </CardContent>
         </Card>
