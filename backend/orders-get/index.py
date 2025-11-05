@@ -38,11 +38,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     admin_token = headers.get('x-admin-token') or headers.get('X-Admin-Token')
     expected_token = os.environ.get('ADMIN_TOKEN', 'default-secret-token')
     
-    print(f"Received token: {admin_token[:10] if admin_token else 'None'}...")
-    print(f"Expected token: {expected_token[:10]}...")
-    print(f"Tokens match: {admin_token == expected_token}")
+    print(f"Received token length: {len(admin_token) if admin_token else 0}")
+    print(f"Expected token length: {len(expected_token)}")
+    print(f"Received repr: {repr(admin_token[:20]) if admin_token else 'None'}")
+    print(f"Expected repr: {repr(expected_token[:20])}")
     
-    if not admin_token or admin_token != expected_token:
+    if not admin_token or admin_token.strip() != expected_token.strip():
         return {
             'statusCode': 401,
             'headers': {
