@@ -556,10 +556,32 @@ export default function AdminPanel() {
                     <CardTitle>Управление портфолио</CardTitle>
                     <CardDescription>Добавляйте и редактируйте работы в разделе "Наши работы"</CardDescription>
                   </div>
-                  <Button onClick={() => { setEditingItem(null); setIsDialogOpen(true); }}>
-                    <Icon name="Plus" size={18} className="mr-2" />
-                    Добавить работу
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        const adminToken = localStorage.getItem('admin_token');
+                        if (adminToken) loadPortfolio(adminToken);
+                      }}
+                      disabled={portfolioLoading}
+                    >
+                      {portfolioLoading ? (
+                        <>
+                          <Icon name="Loader2" size={18} className="animate-spin mr-2" />
+                          Загрузка...
+                        </>
+                      ) : (
+                        <>
+                          <Icon name="RefreshCw" size={18} className="mr-2" />
+                          Обновить
+                        </>
+                      )}
+                    </Button>
+                    <Button onClick={() => { setEditingItem(null); setIsDialogOpen(true); }}>
+                      <Icon name="Plus" size={18} className="mr-2" />
+                      Добавить работу
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
