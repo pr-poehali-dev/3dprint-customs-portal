@@ -1,34 +1,31 @@
+import { useState, useEffect } from 'react';
+
 interface ClientsSectionProps {
   t: any;
 }
 
+interface ClientItem {
+  id: number;
+  name: string;
+  logo_url: string;
+  display_order: number;
+}
+
 const ClientsSection = ({ t }: ClientsSectionProps) => {
-  const clients = [
-    { 
-      name: 'Yandex', 
-      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/f59d3d52-10e3-4c65-8448-bb13279fecfa.jpg'
-    },
-    { 
-      name: 'iRayple', 
-      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/ddd1e75f-968d-4590-847d-9ac38cfa2a45.jpg'
-    },
-    { 
-      name: 'Gazprom', 
-      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/e158635f-fd30-4ef4-9de2-6642746774ce.jpg'
-    },
-    { 
-      name: 'Rosneft', 
-      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/22e16cd4-4f3c-4d70-86e8-2043b3a1b223.jpg'
-    },
-    { 
-      name: 'Alfa Bank', 
-      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/eda10eaf-86eb-44ad-b7af-21c03ef0e296.jpg'
-    },
-    { 
-      name: 'Moscow Metro', 
-      logo: 'https://cdn.poehali.dev/projects/cde2bfc9-e8bf-4329-aed0-a822a287b9dd/files/bd5f4241-5588-4f44-b60a-d1359b199ef9.jpg'
-    },
-  ];
+  const [clients, setClients] = useState<ClientItem[]>([]);
+
+  useEffect(() => {
+    const loadClients = async () => {
+      try {
+        const response = await fetch('https://functions.poehali.dev/d584ff33-449c-4abe-8a4e-13cfe9b42ddc');
+        const data = await response.json();
+        setClients(data.clients || []);
+      } catch (error) {
+        console.error('Ошибка загрузки клиентов:', error);
+      }
+    };
+    loadClients();
+  }, []);
 
   return (
     <section id="clients" className="relative py-20 px-4 overflow-hidden">
@@ -52,7 +49,7 @@ const ClientsSection = ({ t }: ClientsSectionProps) => {
             >
               <div className="w-full h-20 mb-3 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <img 
-                  src={client.logo} 
+                  src={client.logo_url} 
                   alt={client.name}
                   className="max-w-full max-h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
                 />

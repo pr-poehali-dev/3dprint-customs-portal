@@ -6,10 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import * as XLSX from 'xlsx';
-import { Order, PortfolioItem, statusLabels } from '@/components/admin/types';
+import { Order, PortfolioItem, ClientItem, statusLabels } from '@/components/admin/types';
 import OrdersList from '@/components/admin/OrdersList';
 import PortfolioManagement from '@/components/admin/PortfolioManagement';
 import PortfolioDialog from '@/components/admin/PortfolioDialog';
+import ClientsManagement from '@/components/admin/ClientsManagement';
+import ClientDialog from '@/components/admin/ClientDialog';
 
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -32,6 +34,17 @@ export default function AdminPanel() {
     title: '',
     description: '',
     image_url: '',
+    display_order: 0,
+    is_visible: true
+  });
+
+  const [clients, setClients] = useState<ClientItem[]>([]);
+  const [clientsLoading, setClientsLoading] = useState(false);
+  const [editingClient, setEditingClient] = useState<ClientItem | null>(null);
+  const [isClientDialogOpen, setIsClientDialogOpen] = useState(false);
+  const [newClient, setNewClient] = useState<Partial<ClientItem>>({
+    name: '',
+    logo_url: '',
     display_order: 0,
     is_visible: true
   });
@@ -272,6 +285,82 @@ export default function AdminPanel() {
     }
   };
 
+  const loadClients = async (adminToken: string) => {
+    setClientsLoading(true);
+    try {
+      const response = await fetch('https://functions.poehali.dev/d584ff33-449c-4abe-8a4e-13cfe9b42ddc', {
+        method: 'GET',
+        headers: {
+          'X-Admin-Token': adminToken
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setClients(data.clients || []);
+      }
+    } catch (err) {
+      console.error('Ошибка загрузки клиентов:', err);
+    } finally {
+      setClientsLoading(false);
+    }
+  };
+
+  const saveClient = async (item: Partial<ClientItem>) => {
+    const adminToken = localStorage.getItem('admin_token');
+    if (!adminToken) return;
+
+    try {
+      const method = item.id ? 'PUT' : 'POST';
+      const response = await fetch('https://functions.poehali.dev/d584ff33-449c-4abe-8a4e-13cfe9b42ddc', {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Token': adminToken
+        },
+        body: JSON.stringify(item)
+      });
+
+      if (response.ok) {
+        loadClients(adminToken);
+        setIsClientDialogOpen(false);
+        setEditingClient(null);
+        setNewClient({
+          name: '',
+          logo_url: '',
+          display_order: 0,
+          is_visible: true
+        });
+      }
+    } catch (err) {
+      console.error('Ошибка сохранения:', err);
+    }
+  };
+
+  const deleteClient = async (id: number) => {
+    const adminToken = localStorage.getItem('admin_token');
+    if (!adminToken) return;
+
+    if (!confirm('Удалить этого клиента?')) return;
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/d584ff33-449c-4abe-8a4e-13cfe9b42ddc', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Token': adminToken
+        },
+        body: JSON.stringify({ id })
+      });
+
+      if (response.ok) {
+        loadClients(adminToken);
+      }
+    } catch (err) {
+      console.error('Ошибка удаления:', err);
+    }
+  };
+
   useEffect(() => {
     const savedToken = localStorage.getItem('admin_token');
     if (savedToken) {
@@ -286,6 +375,12 @@ export default function AdminPanel() {
       const adminToken = localStorage.getItem('admin_token');
       if (adminToken) {
         loadPortfolio(adminToken);
+      }
+    }
+    if (isAuthenticated && activeTab === 'clients') {
+      const adminToken = localStorage.getItem('admin_token');
+      if (adminToken) {
+        loadClients(adminToken);
       }
     }
   }, [isAuthenticated, activeTab]);
@@ -354,6 +449,10 @@ export default function AdminPanel() {
               <Icon name="Briefcase" size={18} className="mr-2" />
               Портфолио
             </TabsTrigger>
+            <TabsTrigger value="clients">
+              <Icon name="Users" size={18} className="mr-2" />
+              Клиенты
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="orders">
@@ -382,6 +481,18 @@ export default function AdminPanel() {
               setNewItem={setNewItem}
             />
           </TabsContent>
+
+          <TabsContent value="clients" className="space-y-6">
+            <ClientsManagement
+              clients={clients}
+              clientsLoading={clientsLoading}
+              loadClients={loadClients}
+              setEditingClient={setEditingClient}
+              setIsDialogOpen={setIsClientDialogOpen}
+              deleteClient={deleteClient}
+              setNewClient={setNewClient}
+            />
+          </TabsContent>
         </Tabs>
 
         <PortfolioDialog
@@ -391,6 +502,21 @@ export default function AdminPanel() {
           newItem={newItem}
           setNewItem={setNewItem}
           savePortfolioItem={savePortfolioItem}
+          uploadingImage={uploadingImage}
+          isDragging={isDragging}
+          handleImageUpload={handleImageUpload}
+          handleDragOver={handleDragOver}
+          handleDragLeave={handleDragLeave}
+          handleDrop={handleDrop}
+        />
+
+        <ClientDialog
+          isDialogOpen={isClientDialogOpen}
+          setIsDialogOpen={setIsClientDialogOpen}
+          editingClient={editingClient}
+          newClient={newClient}
+          setNewClient={setNewClient}
+          saveClient={saveClient}
           uploadingImage={uploadingImage}
           isDragging={isDragging}
           handleImageUpload={handleImageUpload}

@@ -31,6 +31,16 @@ export interface PortfolioItem {
   updated_at?: string;
 }
 
+export interface ClientItem {
+  id: number;
+  name: string;
+  logo_url: string;
+  display_order: number;
+  is_visible: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export const statusLabels: Record<string, string> = {
   new: 'Новая',
   processing: 'В работе',
