@@ -55,6 +55,8 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [searchEmail, setSearchEmail] = useState('');
 
   const login = () => {
     if (token.trim()) {
@@ -192,6 +194,42 @@ export default function AdminPanel() {
           </div>
         )}
 
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="search-email">Поиск по email</Label>
+                <div className="relative">
+                  <Icon name="Search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Input
+                    id="search-email"
+                    type="text"
+                    placeholder="Введите email..."
+                    value={searchEmail}
+                    onChange={(e) => setSearchEmail(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="filter-status">Фильтр по статусу</Label>
+                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                  <SelectTrigger id="filter-status">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все заявки</SelectItem>
+                    <SelectItem value="new">Новые</SelectItem>
+                    <SelectItem value="processing">В работе</SelectItem>
+                    <SelectItem value="completed">Выполненные</SelectItem>
+                    <SelectItem value="cancelled">Отменённые</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {loading ? (
           <div className="text-center py-12">
             <Icon name="Loader2" size={48} className="animate-spin mx-auto text-primary" />
@@ -204,13 +242,31 @@ export default function AdminPanel() {
               <p className="text-xl text-gray-600">Заявок пока нет</p>
             </CardContent>
           </Card>
-        ) : (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold">Всего заявок: {orders.length}</h2>
-            </div>
+        ) : (() => {
+            const filteredOrders = orders.filter(order => {
+              const matchesStatus = filterStatus === 'all' || order.status === filterStatus;
+              const matchesEmail = !searchEmail || order.email.toLowerCase().includes(searchEmail.toLowerCase());
+              return matchesStatus && matchesEmail;
+            });
 
-            {orders.map((order) => (
+            return (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold">
+                    Найдено заявок: {filteredOrders.length} из {orders.length}
+                  </h2>
+                </div>
+
+                {filteredOrders.length === 0 ? (
+                  <Card>
+                    <CardContent className="py-12 text-center">
+                      <Icon name="Search" size={64} className="mx-auto text-gray-400 mb-4" />
+                      <p className="text-xl text-gray-600">Заявки не найдены</p>
+                      <p className="text-sm text-gray-500 mt-2">Попробуйте изменить фильтры</p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  filteredOrders.map((order) => (
               <Card key={order.id} className="overflow-hidden">
                 <CardHeader 
                   className="cursor-pointer hover:bg-gray-50 transition-colors"
@@ -313,9 +369,11 @@ export default function AdminPanel() {
                   </CardContent>
                 )}
               </Card>
-            ))}
-          </div>
-        )}
+            ))
+                )}
+              </div>
+            );
+          })()}
       </main>
     </div>
   );
