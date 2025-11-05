@@ -48,6 +48,7 @@ export default function AdminPanel() {
     display_order: 0,
     is_visible: true
   });
+  const [importing, setImporting] = useState(false);
 
   const login = () => {
     if (token.trim()) {
@@ -259,6 +260,84 @@ export default function AdminPanel() {
     } catch (err) {
       console.error('Ошибка экспорта:', err);
       alert('Ошибка при экспорте данных');
+    }
+  };
+
+  const importCompleteSite = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const adminToken = localStorage.getItem('admin_token');
+    if (!adminToken) return;
+
+    setImporting(true);
+
+    try {
+      const text = await file.text();
+      const importData = JSON.parse(text);
+
+      if (!importData.database) {
+        alert('❌ Неверный формат файла');
+        return;
+      }
+
+      const portfolioItems = importData.database.portfolio || [];
+      const clientItems = importData.database.clients || [];
+
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const item of portfolioItems) {
+        try {
+          const { id, ...itemData } = item;
+          await fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Admin-Token': adminToken
+            },
+            body: JSON.stringify(itemData)
+          });
+          successCount++;
+        } catch (err) {
+          console.error('Ошибка импорта портфолио:', err);
+          errorCount++;
+        }
+      }
+
+      for (const item of clientItems) {
+        try {
+          const { id, ...itemData } = item;
+          await fetch('https://functions.poehali.dev/e9de2896-8e7d-4fc8-aaa0-e00876a2f5b1', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Admin-Token': adminToken
+            },
+            body: JSON.stringify(itemData)
+          });
+          successCount++;
+        } catch (err) {
+          console.error('Ошибка импорта клиентов:', err);
+          errorCount++;
+        }
+      }
+
+      loadPortfolio(adminToken);
+      loadClients(adminToken);
+
+      if (errorCount === 0) {
+        alert(`✅ Импорт завершен! Импортировано элементов: ${successCount}`);
+      } else {
+        alert(`⚠️ Импорт завершен с ошибками.\nУспешно: ${successCount}\nОшибок: ${errorCount}`);
+      }
+
+      event.target.value = '';
+    } catch (err) {
+      console.error('Ошибка импорта:', err);
+      alert('❌ Ошибка при импорте данных. Проверьте формат файла.');
+    } finally {
+      setImporting(false);
     }
   };
 
@@ -542,6 +621,17 @@ export default function AdminPanel() {
               <Icon name="Download" size={18} className="mr-2" />
               Скачать сайт
             </Button>
+            <Button variant="outline" onClick={() => document.getElementById('import-file')?.click()} disabled={importing}>
+              <Icon name={importing ? "Loader2" : "Upload"} size={18} className={`mr-2 ${importing ? 'animate-spin' : ''}`} />
+              {importing ? 'Импорт...' : 'Загрузить сайт'}
+            </Button>
+            <input
+              id="import-file"
+              type="file"
+              accept=".json"
+              onChange={importCompleteSite}
+              className="hidden"
+            />
             <Button variant="outline" onClick={logout}>
               <Icon name="LogOut" size={18} className="mr-2" />
               Выйти
