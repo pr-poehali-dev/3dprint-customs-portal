@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Get portfolio items",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "portfolio": "array"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

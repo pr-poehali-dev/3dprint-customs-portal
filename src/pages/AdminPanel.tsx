@@ -3,6 +3,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
   SelectContent,
@@ -10,6 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import Icon from '@/components/ui/icon';
 import * as XLSX from 'xlsx';
 
@@ -49,15 +59,39 @@ const statusColors: Record<string, string> = {
   cancelled: 'bg-red-100 text-red-800'
 };
 
+interface PortfolioItem {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string;
+  display_order: number;
+  is_visible: boolean;
+  created_at: string;
+  updated_at?: string;
+}
+
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState('');
+  const [activeTab, setActiveTab] = useState('orders');
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchEmail, setSearchEmail] = useState('');
+  
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+  const [portfolioLoading, setPortfolioLoading] = useState(false);
+  const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newItem, setNewItem] = useState<Partial<PortfolioItem>>({
+    title: '',
+    description: '',
+    image_url: '',
+    display_order: 0,
+    is_visible: true
+  });
 
   const login = () => {
     if (token.trim()) {
@@ -161,12 +195,90 @@ export default function AdminPanel() {
     XLSX.writeFile(workbook, fileName);
   };
 
+  const loadPortfolio = async (adminToken: string) => {
+    setPortfolioLoading(true);
+    try {
+      const response = await fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', {
+        method: 'GET',
+        headers: {
+          'X-Admin-Token': adminToken
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setPortfolio(data.portfolio || []);
+      }
+    } catch (err) {
+      console.error('Ошибка загрузки портфолио:', err);
+    } finally {
+      setPortfolioLoading(false);
+    }
+  };
+
+  const savePortfolioItem = async (item: Partial<PortfolioItem>) => {
+    const adminToken = localStorage.getItem('admin_token');
+    if (!adminToken) return;
+
+    try {
+      const method = item.id ? 'PUT' : 'POST';
+      const response = await fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Token': adminToken
+        },
+        body: JSON.stringify(item)
+      });
+
+      if (response.ok) {
+        loadPortfolio(adminToken);
+        setIsDialogOpen(false);
+        setEditingItem(null);
+        setNewItem({
+          title: '',
+          description: '',
+          image_url: '',
+          display_order: 0,
+          is_visible: true
+        });
+      }
+    } catch (err) {
+      console.error('Ошибка сохранения:', err);
+    }
+  };
+
+  const deletePortfolioItem = async (id: number) => {
+    const adminToken = localStorage.getItem('admin_token');
+    if (!adminToken) return;
+
+    if (!confirm('Удалить эту работу из портфолио?')) return;
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/62b66f50-3759-4932-8376-7ae44620797b', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Token': adminToken
+        },
+        body: JSON.stringify({ id })
+      });
+
+      if (response.ok) {
+        loadPortfolio(adminToken);
+      }
+    } catch (err) {
+      console.error('Ошибка удаления:', err);
+    }
+  };
+
   useEffect(() => {
     const savedToken = localStorage.getItem('admin_token');
     if (savedToken) {
       setToken(savedToken);
       setIsAuthenticated(true);
       loadOrders(savedToken);
+      loadPortfolio(savedToken);
     }
   }, []);
 
@@ -231,6 +343,20 @@ export default function AdminPanel() {
             <p className="text-red-700">{error}</p>
           </div>
         )}
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsTrigger value="orders">
+              <Icon name="ShoppingCart" size={18} className="mr-2" />
+              Заявки
+            </TabsTrigger>
+            <TabsTrigger value="portfolio">
+              <Icon name="Image" size={18} className="mr-2" />
+              Портфолио
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="orders" className="space-y-6">
 
         <Card className="mb-6">
           <CardContent className="pt-6">
@@ -420,6 +546,169 @@ export default function AdminPanel() {
               </div>
             );
           })()}
+          </TabsContent>
+
+          <TabsContent value="portfolio" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Управление портфолио</CardTitle>
+                    <CardDescription>Добавляйте и редактируйте работы в разделе "Наши работы"</CardDescription>
+                  </div>
+                  <Button onClick={() => { setEditingItem(null); setIsDialogOpen(true); }}>
+                    <Icon name="Plus" size={18} className="mr-2" />
+                    Добавить работу
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {portfolioLoading ? (
+                  <div className="text-center py-12">
+                    <Icon name="Loader2" size={48} className="animate-spin mx-auto text-primary" />
+                    <p className="mt-4 text-gray-600">Загрузка...</p>
+                  </div>
+                ) : (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {portfolio.map((item) => (
+                      <Card key={item.id} className="overflow-hidden">
+                        <div className="aspect-video relative">
+                          <img 
+                            src={item.image_url} 
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://placehold.co/600x400?text=Нет+изображения';
+                            }}
+                          />
+                          {!item.is_visible && (
+                            <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs">
+                              Скрыто
+                            </div>
+                          )}
+                        </div>
+                        <CardContent className="p-4">
+                          <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
+                          <p className="text-sm text-gray-600 mb-4">{item.description}</p>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="flex-1"
+                              onClick={() => {
+                                setEditingItem(item);
+                                setNewItem(item);
+                                setIsDialogOpen(true);
+                              }}
+                            >
+                              <Icon name="Edit" size={16} className="mr-1" />
+                              Изменить
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => deletePortfolioItem(item.id)}
+                            >
+                              <Icon name="Trash2" size={16} />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>{editingItem ? 'Редактировать работу' : 'Добавить работу'}</DialogTitle>
+              <DialogDescription>
+                Заполните информацию о работе для портфолио
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="title">Название работы</Label>
+                <Input
+                  id="title"
+                  value={newItem.title}
+                  onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+                  placeholder="Например: Архитектурные модели"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">Описание</Label>
+                <Textarea
+                  id="description"
+                  value={newItem.description}
+                  onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                  placeholder="Краткое описание работы"
+                  rows={3}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="image_url">URL изображения</Label>
+                <Input
+                  id="image_url"
+                  value={newItem.image_url}
+                  onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value })}
+                  placeholder="https://example.com/image.jpg"
+                />
+                {newItem.image_url && (
+                  <div className="mt-2 border rounded-lg overflow-hidden">
+                    <img 
+                      src={newItem.image_url} 
+                      alt="Предпросмотр"
+                      className="w-full h-48 object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://placehold.co/600x400?text=Ошибка+загрузки';
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="display_order">Порядок отображения</Label>
+                  <Input
+                    id="display_order"
+                    type="number"
+                    value={newItem.display_order}
+                    onChange={(e) => setNewItem({ ...newItem, display_order: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="is_visible">Видимость</Label>
+                  <Select 
+                    value={newItem.is_visible ? 'true' : 'false'}
+                    onValueChange={(value) => setNewItem({ ...newItem, is_visible: value === 'true' })}
+                  >
+                    <SelectTrigger id="is_visible">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="true">Видимо</SelectItem>
+                      <SelectItem value="false">Скрыто</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                Отмена
+              </Button>
+              <Button onClick={() => savePortfolioItem(editingItem ? { ...newItem, id: editingItem.id } : newItem)}>
+                <Icon name="Save" size={18} className="mr-2" />
+                Сохранить
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
