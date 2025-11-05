@@ -212,7 +212,7 @@ const Index = () => {
       
       <MaterialsSection t={t} materials={materials} />
       
-      <PortfolioSection t={t} portfolio={portfolio} />
+      <PortfolioSection t={t} />
       
       <OrderSection t={t} handleFormSubmit={handleFormSubmit} isSubmitting={isSubmitting} />
       
