@@ -9,6 +9,7 @@ import json
 import smtplib
 import os
 import base64
+import psycopg2
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
@@ -44,6 +45,44 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     body_data = json.loads(event.get('body', '{}'))
     
     order_number = f"3DP-{datetime.now().strftime('%Y%m%d')}-{context.request_id[:8].upper()}"
+    
+    dsn = os.environ.get('DATABASE_URL')
+    if dsn:
+        try:
+            conn = psycopg2.connect(dsn)
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                INSERT INTO orders 
+                (customer_type, company_name, inn, email, phone, length, width, height, 
+                 plastic_type, color, infill, quantity, description, file_name, status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING id
+            ''', (
+                body_data.get('customerType'),
+                body_data.get('companyName'),
+                body_data.get('inn'),
+                body_data.get('email'),
+                body_data.get('phone'),
+                body_data.get('length'),
+                body_data.get('width'),
+                body_data.get('height'),
+                body_data.get('plastic'),
+                body_data.get('color'),
+                body_data.get('infill'),
+                body_data.get('quantity'),
+                body_data.get('description'),
+                body_data.get('fileName'),
+                'new'
+            ))
+            
+            order_id = cursor.fetchone()[0]
+            conn.commit()
+            cursor.close()
+            conn.close()
+            print(f"✅ Order #{order_id} saved to database")
+        except Exception as e:
+            print(f"⚠️ Failed to save to database: {e}")
     
     email_body = f"""
     <html>
