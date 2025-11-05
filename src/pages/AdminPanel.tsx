@@ -121,6 +121,33 @@ export default function AdminPanel() {
     }
   };
 
+  const deleteOrder = async (orderId: number) => {
+    const adminToken = localStorage.getItem('admin_token');
+    if (!adminToken) return;
+
+    if (!confirm('Вы уверены, что хотите удалить эту заявку? Это действие нельзя отменить.')) return;
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/df2e7780-9527-410f-8848-48ea6e18479d', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Token': adminToken
+        },
+        body: JSON.stringify({ order_id: orderId })
+      });
+
+      if (response.ok) {
+        loadOrders(adminToken);
+      } else {
+        alert('Ошибка при удалении заявки');
+      }
+    } catch (err) {
+      console.error('Ошибка удаления заявки:', err);
+      alert('Ошибка при удалении заявки');
+    }
+  };
+
   const exportToExcel = (ordersToExport: Order[]) => {
     const exportData = ordersToExport.map(order => ({
       'ID заявки': order.id,
@@ -462,6 +489,7 @@ export default function AdminPanel() {
               expandedOrder={expandedOrder}
               setExpandedOrder={setExpandedOrder}
               updateOrderStatus={updateOrderStatus}
+              deleteOrder={deleteOrder}
               exportToExcel={exportToExcel}
               filterStatus={filterStatus}
               setFilterStatus={setFilterStatus}

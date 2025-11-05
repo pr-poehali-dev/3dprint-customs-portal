@@ -18,6 +18,7 @@ interface OrdersListProps {
   expandedOrder: number | null;
   setExpandedOrder: (id: number | null) => void;
   updateOrderStatus: (orderId: number, newStatus: string) => void;
+  deleteOrder: (orderId: number) => void;
   exportToExcel: (orders: Order[]) => void;
   filterStatus: string;
   setFilterStatus: (status: string) => void;
@@ -31,6 +32,7 @@ export default function OrdersList({
   expandedOrder,
   setExpandedOrder,
   updateOrderStatus,
+  deleteOrder,
   exportToExcel,
   filterStatus,
   setFilterStatus,
@@ -201,18 +203,30 @@ export default function OrdersList({
                 )}
 
                 <div className="pt-4 border-t">
-                  <Label className="mb-2 block">Изменить статус</Label>
-                  <Select value={order.status} onValueChange={(value) => updateOrderStatus(order.id, value)}>
-                    <SelectTrigger className="w-full md:w-64">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="new">Новая</SelectItem>
-                      <SelectItem value="processing">В работе</SelectItem>
-                      <SelectItem value="completed">Выполнена</SelectItem>
-                      <SelectItem value="cancelled">Отменена</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex items-end gap-4">
+                    <div className="flex-1">
+                      <Label className="mb-2 block">Изменить статус</Label>
+                      <Select value={order.status} onValueChange={(value) => updateOrderStatus(order.id, value)}>
+                        <SelectTrigger className="w-full md:w-64">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="new">Новая</SelectItem>
+                          <SelectItem value="processing">В работе</SelectItem>
+                          <SelectItem value="completed">Выполнена</SelectItem>
+                          <SelectItem value="cancelled">Отменена</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button 
+                      variant="destructive" 
+                      onClick={() => deleteOrder(order.id)}
+                      className="h-10"
+                    >
+                      <Icon name="Trash2" size={18} className="mr-2" />
+                      Удалить заявку
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             )}

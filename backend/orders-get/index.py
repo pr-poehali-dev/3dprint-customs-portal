@@ -6,10 +6,10 @@ from decimal import Decimal
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Получение списка заявок для админ-панели
+    Business: Получение и удаление заявок для админ-панели
     Args: event - dict с httpMethod, headers для авторизации
           context - объект с request_id и другими параметрами
-    Returns: JSON список заявок или ошибка
+    Returns: JSON список заявок или результат удаления
     '''
     method: str = event.get('httpMethod', 'GET')
     
@@ -18,21 +18,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Token',
                 'Access-Control-Max-Age': '86400'
             },
             'body': ''
-        }
-    
-    if method != 'GET':
-        return {
-            'statusCode': 405,
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            'body': json.dumps({'error': 'Method not allowed'})
         }
     
     headers = event.get('headers', {})
@@ -49,45 +39,99 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     dsn = os.environ.get('DATABASE_URL')
-    
     conn = psycopg2.connect(dsn)
     cursor = conn.cursor()
     
-    cursor.execute('''
-        SELECT 
-            id, customer_type, company_name, inn, email, phone,
-            length, width, height, plastic_type, color, infill,
-            quantity, description, file_url, file_name, status,
-            created_at, updated_at
-        FROM orders
-        ORDER BY created_at DESC
-    ''')
-    
-    columns = [desc[0] for desc in cursor.description]
-    orders = []
-    
-    for row in cursor.fetchall():
-        order_dict = dict(zip(columns, row))
-        if order_dict.get('created_at'):
-            order_dict['created_at'] = order_dict['created_at'].isoformat()
-        if order_dict.get('updated_at'):
-            order_dict['updated_at'] = order_dict['updated_at'].isoformat()
+    if method == 'GET':
+        cursor.execute('''
+            SELECT 
+                id, customer_type, company_name, inn, email, phone,
+                length, width, height, plastic_type, color, infill,
+                quantity, description, file_url, file_name, status,
+                created_at, updated_at
+            FROM orders
+            ORDER BY created_at DESC
+        ''')
         
-        for key, value in order_dict.items():
-            if isinstance(value, Decimal):
-                order_dict[key] = float(value)
+        columns = [desc[0] for desc in cursor.description]
+        orders = []
         
-        orders.append(order_dict)
+        for row in cursor.fetchall():
+            order_dict = dict(zip(columns, row))
+            if order_dict.get('created_at'):
+                order_dict['created_at'] = order_dict['created_at'].isoformat()
+            if order_dict.get('updated_at'):
+                order_dict['updated_at'] = order_dict['updated_at'].isoformat()
+            
+            for key, value in order_dict.items():
+                if isinstance(value, Decimal):
+                    order_dict[key] = float(value)
+            
+            orders.append(order_dict)
+        
+        cursor.close()
+        conn.close()
+        
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'isBase64Encoded': False,
+            'body': json.dumps({'orders': orders})
+        }
+    
+    elif method == 'DELETE':
+        body_data = json.loads(event.get('body', '{}'))
+        order_id = body_data.get('order_id')
+        
+        if not order_id:
+            cursor.close()
+            conn.close()
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': 'order_id is required'})
+            }
+        
+        cursor.execute('DELETE FROM orders WHERE id = %s RETURNING id', (order_id,))
+        result = cursor.fetchone()
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        if result:
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'isBase64Encoded': False,
+                'body': json.dumps({'success': True})
+            }
+        else:
+            return {
+                'statusCode': 404,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': 'Order not found'})
+            }
     
     cursor.close()
     conn.close()
     
     return {
-        'statusCode': 200,
+        'statusCode': 405,
         'headers': {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
         },
-        'isBase64Encoded': False,
-        'body': json.dumps({'orders': orders})
+        'body': json.dumps({'error': 'Method not allowed'})
     }
